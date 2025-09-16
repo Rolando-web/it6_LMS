@@ -21,13 +21,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     // Role-based redirection
     if ($user['roles'] === 'Admin') {
         header('Location: admindashboard.php');
+        echo "Logged in as: " . $user['roles'];
         exit;
     } elseif ($user['roles'] === 'Users') {
         header('Location: userboard.php');
+        echo "Logged in as: " . $user['roles'];
+        exit;
     } else {
         $message = 'Unknown role. Access denied.';
     }
-    exit;
   } else {
 $message = 'Login failed. Please check your credentials.';
   }
@@ -59,7 +61,7 @@ $message = 'Login failed. Please check your credentials.';
       <div class="w-full max-w-md">
         <h2 class="text-2xl md:text-4xl font-semibold  mb-6">LOGIN</h2>
       <?php if($message): ?>
-            <div class="text-red bg-amber-200"><?php echo htmlspecialchars($message); ?></div>
+            <div style="color: red; padding-bottom: 18px;"><?php echo htmlspecialchars($message); ?></div>
             <?php endif; ?>
         <form class="space-y-4" method="POST">
           <div>

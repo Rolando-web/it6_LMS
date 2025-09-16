@@ -1,6 +1,15 @@
 <?php 
+
 require 'database.php';
 require 'auth.php';
+
+$db = (new database())->getConnection();
+$auth = new auth($db);
+
+if (!$auth->isLoggedIn()) {
+  header('Location: login.php');
+  exit;
+}
 
 ?>
 

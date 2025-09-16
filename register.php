@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2 class="text-2xl md:text-4xl font-semibold mb-6">REGISTER</h2>
         <p class="mb-4">Create your account to get started.</p>
             <?php if($message): ?>
-            <div class="text-red"><?php echo htmlspecialchars($message); ?></div>
+            <div style="color: red;"><?php echo htmlspecialchars($message); ?></div>
             <?php endif; ?>
         <form class="space-y-4" method="POST">
           <!-- First Name & Last Name -->
