@@ -25,6 +25,7 @@ document.querySelectorAll(".editBtn").forEach((button) => {
     document.getElementById("edit_id").value = this.dataset.id;
     document.getElementById("edit_title").value = this.dataset.title;
     document.getElementById("edit_author").value = this.dataset.author;
+    document.getElementById("edit_category").value = this.dataset.category;
     document.getElementById("edit_isbn").value = this.dataset.isbn;
     document.getElementById("edit_publish_date").value =
       this.dataset.publish_date;

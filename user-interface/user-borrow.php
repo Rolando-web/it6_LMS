@@ -26,58 +26,41 @@ $db = (new database())->getConnection(); ?>
 
 <body class="bg-gray-900 text-white font-sans">
   <!-- Header -->
-  <header class="bg-gray-900 border-b border-gray-800 px-6 py-4">
-    <nav class="flex items-center justify-between max-w-7xl mx-auto">
+  <header class="bg-gray-900 border-b border-gray-800 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+
       <!-- Logo -->
-      <div class="text-xl font-bold">
+      <div class="flex-shrink-0 text-xl font-bold">
         <a href="index.html" class="hover:text-gray-300 transition-colors">
           <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
         </a>
       </div>
 
-      <!-- Navigation Links -->
-      <div class="hidden md:flex items-center space-x-8">
-        <a href="index.html" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 border border-gray-300"></div>
-          <span>Home</span>
-        </a>
-        <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 grid grid-cols-2 gap-px">
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-          </div>
-          <span>Category</span>
-        </a>
-        <a href="books.html" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
-          <div class="w-4 h-4 border border-white relative">
-            <div class="absolute inset-1 bg-white"></div>
-          </div>
-          <span>Books</span>
-        </a>
-        <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>Suggest</span>
-        </a>
-      </div>
+      <!-- Navigation Links (≥769px) -->
+      <nav class="hidden md:flex flex-grow justify-center gap-8">
+        <a href="index.html" class="text-gray-300 hover:text-white">Home</a>
+        <a href="#" class="text-gray-300 hover:text-white">Category</a>
+        <a href="books.html" class="text-white hover:text-gray-300">Books</a>
+        <a href="#" class="text-gray-300 hover:text-white">Suggest</a>
+      </nav>
 
-      <!-- Search and Profile -->
-      <div class="flex items-center space-x-4">
+      <!-- Search + Profile -->
+      <div class="flex items-center gap-6">
         <!-- Search -->
         <div class="relative hidden sm:block">
-          <input type="text" id="searchInput" placeholder="Search title, Author, Isbn" class="bg-gray-800 bg-opacity-50 text-white placeholder-gray-400 px-4 py-2 pr-10 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none w-64">
-          <svg class="absolute right-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          <input type="text" placeholder="Search title, Author, ISBN"
+            class="bg-gray-800 text-white placeholder-gray-400 px-4 py-2 pr-10 rounded-lg border border-gray-600 focus:outline-none w-64">
+          <svg class="absolute right-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
 
         <!-- Profile -->
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center gap-3">
           <div class="text-right">
-            <div class="text-sm font-medium">Rolando Luayon</div>
+            <div class="text-sm font-medium text-white">Rolando Luayon</div>
             <div class="text-xs text-gray-400">Member</div>
           </div>
           <div class="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
@@ -85,8 +68,30 @@ $db = (new database())->getConnection(); ?>
           </div>
         </div>
       </div>
-    </nav>
+
+      <!-- Mobile Menu Toggle (≤768px) -->
+      <button class="md:hidden text-gray-300 hover:text-white ml-auto" id="mobileToggle">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="md:hidden hidden flex flex-col space-y-2 px-4 pt-4 pb-2 bg-gray-800 text-gray-300">
+      <a href="index.html" class="hover:text-white">Home</a>
+      <a href="#" class="hover:text-white">Category</a>
+      <a href="books.html" class="hover:text-white">Books</a>
+      <a href="#" class="hover:text-white">Suggest</a>
+      <div class="pt-2 border-t border-gray-700">
+        <div class="text-sm font-medium">Rolando Luayon</div>
+        <div class="text-xs text-gray-400">Member</div>
+      </div>
+    </div>
   </header>
+
+
 
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-6 py-8">

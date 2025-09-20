@@ -19,15 +19,16 @@ class Database
     }
 
     // CREATE
-    public function createBook($title, $author, $isbn, $publish_date, $copies, $imagePath)
+    public function createBook($title, $author, $category, $isbn, $publish_date, $copies, $imagePath)
     {
         try {
-            $sql = "INSERT INTO books (title, author, isbn, publish_date, copies, image) 
-                    VALUES (:title, :author, :isbn, :publish_date, :copies, :image)";
+            $sql = "INSERT INTO books (title, author, category,isbn, publish_date, copies, image) 
+                    VALUES (:title, :author,:category, :isbn, :publish_date, :copies, :image)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 ':title' => $title,
                 ':author' => $author,
+                ':category' => $category,
                 ':isbn' => $isbn,
                 ':publish_date' => $publish_date,
                 ':copies' => $copies,
@@ -58,16 +59,17 @@ class Database
     }
 
     // UPDATE
-    public function updateBook($id, $title, $author, $isbn, $publish_date, $copies, $imagePath)
+    public function updateBook($id, $title, $author, $category, $isbn, $publish_date, $copies, $imagePath)
     {
         try {
             $sql = "UPDATE books 
-                SET title = :title, author = :author, isbn = :isbn, publish_date = :publish_date, copies = :copies, image = :image
+                SET title = :title, author = :author, category = :category ,isbn = :isbn, publish_date = :publish_date, copies = :copies, image = :image
                 WHERE id = :id";
             $stmt = $this->pdo->prepare($sql);
             return $stmt->execute([
                 ':title' => $title,
                 ':author' => $author,
+                ':category' => $category,
                 ':isbn' => $isbn,
                 ':publish_date' => $publish_date,
                 ':copies' => $copies,

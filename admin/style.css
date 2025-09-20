@@ -112,6 +112,31 @@ body {
   }
 }
 
+@media (min-width: 769px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1050;
+  }
+
+  .main-content {
+    margin-left: 250px !important;
+    width: calc(100% - 250px) !important;
+  }
+
+  .table-responsive img {
+    width: 60px !important;
+    height: 80px !important;
+  }
+
+  .btn-group .btn {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+}
+
 .sidebar-overlay {
   position: fixed;
   top: 0;

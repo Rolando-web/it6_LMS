@@ -15,6 +15,7 @@ if (isset($_SESSION['message'])) {
 if (isset($_POST['addBook'])) {
     $title = $_POST['title'];
     $author = $_POST['author'];
+    $category = $_POST['category'];
     $isbn = $_POST['isbn'];
     $publish_date = $_POST['publish_date'];
     $copies = $_POST['copies'];
@@ -31,7 +32,7 @@ if (isset($_POST['addBook'])) {
         }
     }
 
-    if ($database->createBook($title, $author, $isbn, $publish_date, $copies, $imagePath)) {
+    if ($database->createBook($title, $author, $category, $isbn, $publish_date, $copies, $imagePath)) {
         $_SESSION['message'] = "✅ Book added successfully!";
     } else {
         $_SESSION['message'] = "❌ Failed to add book.";
@@ -45,6 +46,7 @@ if (isset($_POST['updateBook'])) {
     $id = $_POST['edit_id'];
     $title = $_POST['edit_title'];
     $author = $_POST['edit_author'];
+    $category = $_POST['edit_category'];
     $isbn = $_POST['edit_isbn'];
     $publish_date = $_POST['edit_publish_date'];
     $copies = $_POST['edit_copies'];
@@ -60,7 +62,7 @@ if (isset($_POST['updateBook'])) {
         }
     }
 
-    if ($database->updateBook($id, $title, $author, $isbn, $publish_date, $copies, $imagePath)) {
+    if ($database->updateBook($id, $title, $author, $category, $isbn, $publish_date, $copies, $imagePath)) {
         $_SESSION['message'] = "✏️ Book updated successfully!";
     } else {
         $_SESSION['message'] = "❌ Failed to update book.";
@@ -142,7 +144,7 @@ $books = $database->tableBooks($limit, $offset);
                         <i class="bi bi-book me-2"></i>
                         Books
                     </a>
-                    <a class="nav-link text-light py-3 px-3" href="#" style="font-size: 16px;">
+                    <a class="nav-link text-light py-3 px-3" href="../admin/useradmin.php" style="font-size: 16px;">
                         <i class="bi bi-people me-2"></i>
                         Users
                     </a>
@@ -150,7 +152,7 @@ $books = $database->tableBooks($limit, $offset);
             </div>
 
             <div class="position-absolute bottom-0 w-100 p-4">
-                <a href="../login.php">
+                <a href="../login.php" class="text-decoration-none">
                     <button class="btn text-light d-flex align-items-center" style="font-size: 16px;">
                         <i class="bi bi-box-arrow-right me-2"></i>
                         Log Out
@@ -171,10 +173,10 @@ $books = $database->tableBooks($limit, $offset);
                 <div class="d-flex align-items-center">
                     <div class="d-none d-sm-block text-end me-3">
                         <div class="text-light">Pocholo Basuge</div>
-                        <small class="text-muted">Admin</small>
+                        <small class="text-white opacity-50">Admin</small>
                     </div>
                     <img
-                        src="https://via.placeholder.com/40x40/6c757d/ffffff?text=PB"
+                        src="../image/willan.jpg"
                         alt="Profile"
                         class="rounded-circle"
                         width="40"
@@ -190,7 +192,7 @@ $books = $database->tableBooks($limit, $offset);
                             <div style="color: green; padding-bottom: 18px;"><?php echo htmlspecialchars($message); ?></div>
                         <?php endif; ?>
                     </div>
-                    <div class="col-1 col-md-4 mb-3 mb-md-0">
+                    <div class="col-4 col-md-4 mb-3 mb-md-0">
                         <button type="button" class="btn btn-info d-flex align-items-center w-20 w-md-auto justify-content-center"
                             data-bs-toggle="modal" data-bs-target="#addBookModal">
                             <i class="bi bi-plus-circle me-2"></i>
@@ -214,12 +216,13 @@ $books = $database->tableBooks($limit, $offset);
                 <!-- Table -->
                 <div class="table-responsive">
                     <table class="table table-dark table-hover">
-                        <thead>
+                        <thead class="text-white font-bold">
                             <tr>
                                 <th scope="col">Image</th>
                                 <th scope="col">ID</th>
                                 <th scope="col">Title</th>
                                 <th scope="col" class="d-none d-sm-table-cell">Author</th>
+                                <th scope="col">Category</th>
                                 <th scope="col" class="d-none d-lg-table-cell">ISBN</th>
                                 <th scope="col" class="d-none d-md-table-cell">Publish_date</th>
                                 <th scope="col" class="d-none d-lg-table-cell">Copies</th>
@@ -239,11 +242,11 @@ $books = $database->tableBooks($limit, $offset);
                                     <td class="align-middle">
                                         <div>
                                             <div class="fw-bold"><?= htmlspecialchars($book['title']) ?></div>
-                                            <small class="text-muted d-block d-sm-none"><?= htmlspecialchars($book['author']) ?></small>
-                                            <small class="text-muted"><?= htmlspecialchars($book['isbn']) ?></small>
+                                            <small class="opacity-50"><?= htmlspecialchars($book['author']) ?></small>
                                         </div>
                                     </td>
                                     <td class="align-middle d-none d-sm-table-cell"><?= htmlspecialchars($book['author']) ?></td>
+                                    <td class="align-middle d-none d-sm-table-cell"><?= htmlspecialchars($book['category']) ?></td>
                                     <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['isbn']) ?></td>
                                     <td class="align-middle d-none d-md-table-cell"><?= htmlspecialchars($book['publish_date']) ?></td>
                                     <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['copies']) ?></td>
@@ -334,6 +337,17 @@ $books = $database->tableBooks($limit, $offset);
                                         <input type="text" class="form-control" id="author" name="author" required>
                                     </div>
                                     <div class="mb-3">
+                                        <label for="category" class="form-label">Roles</label>
+                                        <select class="form-select" id="category" name="category" required>
+                                            <option value="Fiction">Fiction</option>
+                                            <option value="Science & Technology">Science & Technology</option>
+                                            <option value="History & Biography">History & Biography</option>
+                                            <option value="Business & Economics">Business & Economics</option>
+                                            <option value="Philosophy & Psychology">Philosophy & Psychology</option>
+                                            <option value="Arts & Literature">Arts & Literature</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="isbn" class="form-label">ISBN</label>
                                         <input type="text" class="form-control" id="isbn" name="isbn" required>
                                     </div>
@@ -376,6 +390,17 @@ $books = $database->tableBooks($limit, $offset);
 
                                 <input type="text" id="edit_title" name="edit_title" class="form-control mb-2" required>
                                 <input type="text" id="edit_author" name="edit_author" class="form-control mb-2" required>
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select class="form-select" id="edit_category" name="edit_category" required>
+                                        <option value="Fiction">Fiction</option>
+                                        <option value="Science & Technology">Science & Technology</option>
+                                        <option value="History & Biography">History & Biography</option>
+                                        <option value="Business & Economics">Business & Economics</option>
+                                        <option value="Philosophy & Psychology">Philosophy & Psychology</option>
+                                        <option value="Arts & Literature">Arts & Literature</option>
+                                    </select>
+                                </div>
                                 <input type="text" id="edit_isbn" name="edit_isbn" class="form-control mb-2" required>
                                 <input type="date" id="edit_publish_date" name="edit_publish_date" class="form-control mb-2" required>
                                 <input type="number" id="edit_copies" name="edit_copies" class="form-control mb-2" required>

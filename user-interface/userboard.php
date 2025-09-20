@@ -17,6 +17,7 @@ $auth = new auth($db);
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../src/input.css" />
   <link rel="stylesheet" href="../src/output.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <title>Home Library</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -40,7 +41,7 @@ $auth = new auth($db);
     <header class="relative z-10 px-6 py-4">
       <nav class="flex items-center md:justify-between max-w-7xl mx-auto">
         <!-- Logo -->
-        <div class="text-xl font-bold flex-1">
+        <div class="text-xl font-bold flex-1 pr-10 lg-flex-0">
           <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
         </div>
 
@@ -52,7 +53,7 @@ $auth = new auth($db);
         </button>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex items-center space-x-8">
+        <div class="hidden md:flex items-start space-x-4 sm:flex-1">
           <a href="#" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
             <div class="w-4 h-4 border border-white"></div>
             <span>Home</span>
@@ -130,7 +131,7 @@ $auth = new auth($db);
             <!-- Profile Section -->
             <div class="flex items-center space-x-3 mb-8 pb-6 border-b border-gray-800">
               <div class="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
-                <span class="text-white font-semibold">RL</span>
+                <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
               </div>
               <div>
                 <div class="text-white font-medium">Rolando Luayon</div>
@@ -257,394 +258,161 @@ $auth = new auth($db);
           <h2 class="text-3xl font-light text-white mb-2">Featured Books</h2>
           <p class="text-gray-400">Hand-picked selections from our curated collection</p>
         </div>
-        <button class="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors inline-flex items-center space-x-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-          </svg>
-          <span>View All Books</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </button>
       </div>
 
-      <!-- Books Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Book Card 1 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
+      <!-- 🔹 First Row Slider -->
+      <div class="swiper mySwiper1">
+        <div class="swiper-wrapper ">
+          <!-- Book 1 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
+              </div>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+              </div>
             </div>
           </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
+
+          <!-- Book 2 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
               </div>
-              <span class="text-gray-500 text-sm">2024</span>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+              </div>
             </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
+          </div>
+          <!-- Book 3 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
+              </div>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+              </div>
+            </div>
+          </div>
+          <!-- Book 4 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
+              </div>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Book Card 2 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
-              </div>
-              <span class="text-gray-500 text-sm">2024</span>
-            </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
-          </div>
-        </div>
-
-        <!-- Book Card 3 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
-              </div>
-              <span class="text-gray-500 text-sm">2024</span>
-            </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
-          </div>
-        </div>
-
-        <!-- Book Card 4 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
-              </div>
-              <span class="text-gray-500 text-sm">2024</span>
-            </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
-          </div>
-        </div>
-
-        <!-- Book Card 5 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
-              </div>
-              <span class="text-gray-500 text-sm">2024</span>
-            </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
-          </div>
-        </div>
-
-        <!-- Book Card 6 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
-              </div>
-              <span class="text-gray-500 text-sm">2024</span>
-            </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
-          </div>
-        </div>
-
-        <!-- Book Card 7 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
-              </div>
-              <span class="text-gray-500 text-sm">2024</span>
-            </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
-          </div>
-        </div>
-
-        <!-- Book Card 8 -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="mb-4">
-            <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-              <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop"
-                alt="The Art of Conscious Living"
-                class="w-full h-full object-cover rounded-lg">
-            </div>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-            <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-            <div class="flex items-center space-x-2">
-              <div class="flex items-center space-x-1">
-                <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <span class="text-yellow-400 text-sm font-medium">4.8</span>
-              </div>
-              <span class="text-gray-500 text-sm">2024</span>
-            </div>
-            <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-              Borrow Books
-            </button>
-          </div>
+        <div class="mt-10">
+          <div class="swiper-pagination"></div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- Explore by Category Section -->
-  <section class="bg-gray-900 py-16 px-6">
-    <div class="max-w-7xl mx-auto">
-      <!-- Section Header -->
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-light text-white mb-4">Explore by Category</h2>
-        <p class="text-gray-400 text-lg">From fiction to science, discover books across every genre and subject</p>
-      </div>
-
-      <!-- Categories Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Fiction Category -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-teal-600 bg-opacity-20 rounded-full flex items-center justify-center">
-                <span class="text-teal-400 font-semibold text-sm">01</span>
+      <!-- 🔹 Second Row Slider -->
+      <div class="swiper mySwiper2">
+        <div class="swiper-wrapper">
+          <!-- Book 5 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
               </div>
-              <div>
-                <h3 class="text-white font-medium text-lg">Fiction</h3>
-                <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
               </div>
             </div>
           </div>
-          <div class="flex items-center justify-between">
-            <span class="text-teal-400 font-medium">20 books</span>
-            <button class="text-teal-400 hover:text-teal-300 transition-colors inline-flex items-center space-x-1 text-sm">
-              <span>Explore</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Science & Technology Category -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-blue-600 bg-opacity-20 rounded-full flex items-center justify-center">
-                <span class="text-blue-400 font-semibold text-sm">02</span>
+          <!-- Book 6 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
               </div>
-              <div>
-                <h3 class="text-white font-medium text-lg">Science & Technology</h3>
-                <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
               </div>
             </div>
           </div>
-          <div class="flex items-center justify-between">
-            <span class="text-blue-400 font-medium">20 books</span>
-            <button class="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center space-x-1 text-sm">
-              <span>Explore</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- History & Biography Category -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-amber-600 bg-opacity-20 rounded-full flex items-center justify-center">
-                <span class="text-amber-400 font-semibold text-sm">03</span>
+          <!-- Book 8 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
               </div>
-              <div>
-                <h3 class="text-white font-medium text-lg">History & Biography</h3>
-                <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
               </div>
             </div>
           </div>
-          <div class="flex items-center justify-between">
-            <span class="text-amber-400 font-medium">20 books</span>
-            <button class="text-amber-400 hover:text-amber-300 transition-colors inline-flex items-center space-x-1 text-sm">
-              <span>Explore</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Business & Economics Category -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-purple-600 bg-opacity-20 rounded-full flex items-center justify-center">
-                <span class="text-purple-400 font-semibold text-sm">04</span>
+          <!-- Book 8 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
               </div>
-              <div>
-                <h3 class="text-white font-medium text-lg">Business & Economics</h3>
-                <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
+                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
+                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
               </div>
             </div>
           </div>
-          <div class="flex items-center justify-between">
-            <span class="text-purple-400 font-medium">20 books</span>
-            <button class="text-purple-400 hover:text-purple-300 transition-colors inline-flex items-center space-x-1 text-sm">
-              <span>Explore</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </button>
-          </div>
         </div>
-
-        <!-- Philosophy & Psychology Category -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center">
-                <span class="text-green-400 font-semibold text-sm">05</span>
-              </div>
-              <div>
-                <h3 class="text-white font-medium text-lg">Philosophy & Psychology</h3>
-                <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-green-400 font-medium">20 books</span>
-            <button class="text-green-400 hover:text-green-300 transition-colors inline-flex items-center space-x-1 text-sm">
-              <span>Explore</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </button>
-          </div>
+        <div class="mt-10">
+          <div class="swiper-pagination"></div>
         </div>
-
-        <!-- Arts & Literature Category -->
-        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-pink-600 bg-opacity-20 rounded-full flex items-center justify-center">
-                <span class="text-pink-400 font-semibold text-sm">06</span>
-              </div>
-              <div>
-                <h3 class="text-white font-medium text-lg">Arts & Literature</h3>
-                <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-pink-400 font-medium">20 books</span>
-            <button class="text-pink-400 hover:text-pink-300 transition-colors inline-flex items-center space-x-1 text-sm">
-              <span>Explore</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- Footer -->
@@ -764,40 +532,80 @@ $auth = new auth($db);
       </div>
     </div>
   </footer>
-
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>
     // Mobile menu functionality
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileMenuPanel = document.getElementById('mobileMenuPanel');
-    const closeMobileMenu = document.getElementById('closeMobileMenu');
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const mobileMenuPanel = document.getElementById("mobileMenuPanel");
+    const closeMobileMenu = document.getElementById("closeMobileMenu");
 
     function openMobileMenu() {
-      mobileMenu.classList.remove('hidden');
+      mobileMenu.classList.remove("hidden");
       setTimeout(() => {
-        mobileMenuPanel.classList.remove('translate-x-full');
+        mobileMenuPanel.classList.remove("translate-x-full");
       }, 10);
     }
 
     function closeMobileMenuFunc() {
-      mobileMenuPanel.classList.add('translate-x-full');
+      mobileMenuPanel.classList.add("translate-x-full");
       setTimeout(() => {
-        mobileMenu.classList.add('hidden');
+        mobileMenu.classList.add("hidden");
       }, 300);
     }
 
-    mobileMenuBtn.addEventListener('click', openMobileMenu);
-    closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+    mobileMenuBtn.addEventListener("click", openMobileMenu);
+    closeMobileMenu.addEventListener("click", closeMobileMenuFunc);
 
     // Close menu when clicking outside
-    mobileMenu.addEventListener('click', (e) => {
+    mobileMenu.addEventListener("click", (e) => {
       if (e.target === mobileMenu) {
         closeMobileMenuFunc();
       }
     });
-  </script>
 
+    // Swiper ni
+    // First row
+    var swiper1 = new Swiper(".mySwiper1", {
+      slidesPerView: 1.2, // small preview of next card
+      spaceBetween: 20,
+      pagination: {
+        el: ".mySwiper1 .swiper-pagination",
+        clickable: true,
+      },
+      freeMode: true,
+      grabCursor: true,
+      breakpoints: {
+        640: {
+          slidesPerView: 2.5,
+        },
+        1024: {
+          slidesPerView: 4,
+        },
+      },
+    });
+
+    // Second row
+    var swiper2 = new Swiper(".mySwiper2", {
+      slidesPerView: 1.2,
+      spaceBetween: 20,
+      pagination: {
+        el: ".mySwiper2 .swiper-pagination",
+        clickable: true,
+      },
+      freeMode: true,
+      grabCursor: true,
+      breakpoints: {
+        640: {
+          slidesPerView: 2.5,
+        },
+        1024: {
+          slidesPerView: 4,
+        },
+      },
+    });
+  </script>
 </body>
 
 </html>

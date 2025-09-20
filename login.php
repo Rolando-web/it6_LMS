@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Role-based redirection
     if ($user['roles'] === 'Admin') {
-      header('Location: admin/admindashboard.php');
+      header('Location: admin/bookadmin.php');
       echo "Logged in as: " . $user['roles'];
       exit;
     } elseif ($user['roles'] === 'Users') {

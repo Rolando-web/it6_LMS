@@ -1,0 +1,324 @@
+<?php
+require_once '../database.php';
+require_once '../auth.php';
+
+$db = new database();
+$conn = $db->getConnection();
+
+$auth = new auth($conn);
+
+
+// Pagination
+$limit = 10; // rows per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+
+$offset = ($page - 1) * $limit;
+
+$totalusers = $auth->getTotalusers();
+$totalPages = ceil($totalusers / $limit);
+
+$users = $auth->getusers($limit, $offset);
+
+if (isset($_POST['delete_id'])) {
+  if ($auth->deleteuser($_POST['delete_id'])) {
+    $_SESSION['message'] = "User deleted successfully!";
+  } else {
+    $_SESSION['message'] = "❌ Failed to delete user.";
+  }
+  header("Location: " . $_SERVER['PHP_SELF']);
+  exit();
+}
+
+// Add users manually 
+if (isset($_POST['addUser'])) {
+  $auth->Modalregister(
+    $_POST['first_name'],
+    $_POST['last_name'],
+    $_POST['contact'],
+    $_POST['email'],
+    $_POST['password'],
+    $_POST['roles'] // ✅ Pass the selected role from the form
+  );
+}
+
+
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Management System - Admin Control</title>
+  <meta name="description" content="Admin dashboard for book management system with dark theme interface">
+  <link rel="stylesheet" href="../admin/style.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="d-flex min-vh-100">
+    <!-- Mobile Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar bg-dark text-light p-0" id="sidebar">
+      <div class="p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="mb-0 fw-bold text-light">
+            ADMIN<span class="font-light">CONTROL</span>
+          </h4>
+          <button class="btn btn-sm d-md-none text-light" id="closeSidebar">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <nav class="nav flex-column">
+          <a class="nav-link text-light py-3 px-3" href="#" style="font-size: 16px;">
+            <i class="bi bi-speedometer2 me-2"></i>
+            Dashboard
+          </a>
+          <a class="nav-link text-light py-3 px-3" href="#" style="font-size: 16px;">
+            <i class="bi bi-collection me-2"></i>
+            Category
+          </a>
+          <a class="nav-link text-light py-3 px-3" href="../admin/bookadmin.php" style="font-size: 16px;">
+            <i class="bi bi-book me-2"></i>
+            Books
+          </a>
+          <a class="nav-link text-light py-3 px-3 active" href="#" style="font-size: 16px;">
+            <i class="bi bi-people me-2"></i>
+            Users
+          </a>
+        </nav>
+      </div>
+
+      <div class="position-absolute bottom-0 w-100 p-4">
+        <a href="../login.php" class="text-decoration-none">
+          <button class="btn text-light d-flex align-items-center" style="font-size: 16px;">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Log Out
+          </button></a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content flex-grow-1">
+      <!-- Header -->
+      <div class="d-flex justify-content-between md-justify-content-around align-items-center p-4 header-border">
+        <div class="d-flex align-items-center">
+          <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
+            <i class="bi bi-list fs-4"></i>
+          </button>
+          <h2 class="text-light mb-0 text-sm">Users Management</h2>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Right: Profile Info -->
+            <div class="d-flex align-items-center">
+              <!-- Desktop View -->
+              <div class="d-none d-sm-block text-end me-3">
+                <div class="text-light">Pocholo Basuge</div>
+                <small class="text-white opacity-50">Admin</small>
+              </div>
+
+              <!-- Mobile Dropdown -->
+              <div class="dropdown d-sm-none">
+                <a
+                  href="#"
+                  class="d-flex align-items-center"
+                  id="profileDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img
+                    src="../image/willan.jpg"
+                    alt="Profile"
+                    class="rounded-circle"
+                    width="40"
+                    height="40" />
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                  <li><span class="dropdown-item-text fw-bold">Pocholo Basuge</span></li>
+                  <li><span class="dropdown-item-text text-muted">Admin</span></li>
+                </ul>
+              </div>
+
+              <!-- Desktop Profile Image -->
+              <img
+                src="../image/willan.jpg"
+                alt="Profile"
+                class="rounded-circle d-none d-sm-block"
+                width="40"
+                height="40" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 w-100">
+
+        <!-- Controls -->
+        <div>
+          <div class="row mb-4">
+            <!-- <div>
+              <?php if ($message): ?>
+                <div style="color: green; padding-bottom: 18px;"><?php echo htmlspecialchars($message); ?></div>
+              <?php endif; ?>
+            </div> -->
+            <div class="col-6 col-md-4 mb-3 mb-md-0">
+              <button type="button" class="btn btn-info d-flex align-items-center w-20 w-md-auto justify-content-center"
+                data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add User
+              </button>
+
+            </div>
+          </div>
+
+
+
+          <!-- Table -->
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table table-dark table-hover align-middle">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">First Name</th>
+                  <th scope="col">Last Name</th>
+                  <th scope="col">Contact</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Password</th>
+                  <th scope="col">Roles</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($auth->getUsers() as $user): ?>
+                  <tr>
+                    <td><?= htmlspecialchars($user['id']) ?></td>
+                    <td><?= htmlspecialchars($user['first_name']) ?></td>
+                    <td><?= htmlspecialchars($user['last_name']) ?></td>
+                    <td><?= htmlspecialchars($user['contact']) ?></td>
+                    <td><?= htmlspecialchars($user['email']) ?></td>
+                    <td><?= htmlspecialchars($user['password']) ?></td>
+                    <td><?= htmlspecialchars($user['roles']) ?></td>
+                    <td>
+                      <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-warning editBtn">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <form method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                          <input type="hidden" name="delete_id" value="<?= $user['id'] ?>">
+                          <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </form>
+                        <button type="button" class="btn btn-sm btn-outline-info" title="View">
+                          <i class="bi bi-eye"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+
+
+          <!-- Pagination -->
+          <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Book pagination">
+              <ul class="pagination">
+                <!-- Prev Button -->
+                <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                  <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                    &laquo;
+                  </a>
+                </li>
+
+                <!-- Page Numbers -->
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                  <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
+                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                  </li>
+                <?php endfor; ?>
+
+                <!-- Next Button -->
+                <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                  <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                    &raquo;
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+
+          <!-- Modal -->
+          <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                  <form method="POST" id="addUserForm">
+                    <div class="mb-3">
+                      <label for="first_name" class="form-label">First Name</label>
+                      <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="last_name" class="form-label">Last Name</label>
+                      <input type="text" class="form-control" id="last_name" name="last_name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="contact" class="form-label">Contact</label>
+                      <input type="text" class="form-control" id="contact" name="contact" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="password" class="form-label">Password</label>
+                      <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="roles" class="form-label">Roles</label>
+                      <select class="form-select" id="roles" name="roles" required>
+                        <option value="Users">Users</option>
+                        <option value="Admin">Admin</option>
+                      </select>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" form="addUserForm" name="addUser" class="btn btn-primary">Register User</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- Bootstrap JS for mobile sidebar toggle -->
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+          <script src="../admin/script.js"></script>
+</body>
+
+</html>
