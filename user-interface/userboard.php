@@ -1,9 +1,12 @@
 <?php
-require '../database.php';
+// require '../database.php';
+require '../admin/BookController.php';
 require '../auth.php';
 
-$db = (new database())->getConnection();
-$auth = new auth($db);
+$database = (new Database())->__construct();
+$auth = new auth($database);
+$database = new Database();
+$books = $database->getBooks();
 
 
 ?>
@@ -19,29 +22,17 @@ $auth = new auth($db);
   <link rel="stylesheet" href="../src/output.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <title>Home Library</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            'sans': ['Inter', 'system-ui', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
 </head>
 
-<body class="bg-gray-900 text-white font-sans">
+<body class="bg-gray-900 text-white font-sans w-full">
   <!-- Background -->
   <div class="min-h-screen relative bg-cover bg-center bg-no-repeat" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.pexels.com/photos/481516/pexels-photo-481516.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">
 
     <!-- Header -->
     <header class="relative z-10 px-6 py-4">
-      <nav class="flex items-center md:justify-between max-w-7xl mx-auto">
+      <nav class="flex items-center md:justify-between max-w-10xl mx-auto">
         <!-- Logo -->
-        <div class="text-xl font-bold flex-1 pr-10 lg-flex-0">
+        <div class="text-xl font-bold flex-1 pr-10 lg-flex-1">
           <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
         </div>
 
@@ -54,7 +45,7 @@ $auth = new auth($db);
 
         <!-- Navigation Links -->
         <div class="hidden md:flex items-start space-x-4 sm:flex-1">
-          <a href="#" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
+          <a href="./userboard.php" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
             <div class="w-4 h-4 border border-white"></div>
             <span>Home</span>
           </a>
@@ -67,7 +58,7 @@ $auth = new auth($db);
             </div>
             <span>Category</span>
           </a>
-          <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
+          <a href="./user-borrow.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
             <div class="w-4 h-4 border border-gray-300 relative">
               <div class="absolute inset-1 bg-gray-300"></div>
             </div>
@@ -82,20 +73,22 @@ $auth = new auth($db);
         </div>
 
         <!-- Desktop Search and Profile -->
-        <div class="hidden md:flex items-center space-x-4">
+        <div class="hidden md:flex items-center space-x-4 lg:mr-10">
           <!-- Search -->
-          <div class="relative">
-            <input type="text" placeholder="Search title, Author, Isbn" class="bg-gray-800 bg-opacity-50 text-white placeholder-gray-400 px-4 py-2 pr-10 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none w-64">
+          <div class="relative ml-4 hidden md:flex">
+            <input type="text" placeholder="Search title, Author, Isbn" class="bg-gray-800 bg-opacity-50 text-white placeholder-gray-400 px-4 py-2 pr-10 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none w-40 lg:w-50">
             <svg class="absolute right-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </div>
+        </div>
 
+        <div class="hidden md:flex items-center space-x-4">
           <!-- Profile -->
-          <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-2 md:space-x-2">
             <div class="text-right">
-              <div class="text-sm font-medium">Rolando Luayon</div>
-              <div class="text-xs text-gray-400">Member</div>
+              <div class="text-sm font-medium hidden lg:block">Rolando Luayon</div>
+              <div class="text-xs text-gray-400 hidden lg:block">Member</div>
             </div>
             <div class="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
               <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
@@ -151,7 +144,7 @@ $auth = new auth($db);
 
             <!-- Navigation Links -->
             <nav class="space-y-4">
-              <a href="#" class="flex items-center space-x-3 text-white hover:text-gray-300 transition-colors py-3">
+              <a href="./userboard.php" class="flex items-center space-x-3 text-white hover:text-gray-300 transition-colors py-3">
                 <div class="w-5 h-5 border border-white"></div>
                 <span class="text-lg">Home</span>
               </a>
@@ -164,7 +157,7 @@ $auth = new auth($db);
                 </div>
                 <span class="text-lg">Category</span>
               </a>
-              <a href="books.html" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
+              <a href="./user-borrow.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
                 <div class="w-5 h-5 border border-gray-300 relative">
                   <div class="absolute inset-1 bg-gray-300"></div>
                 </div>
@@ -264,74 +257,27 @@ $auth = new auth($db);
       <div class="swiper mySwiper1">
         <div class="swiper-wrapper ">
           <!-- Book 1 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Book 2 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+          <?php foreach ($books as $book): ?>
+            <div class="swiper-slide">
+              <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+                <div class="mb-4">
+                  <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+                    <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
+                      alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
+                  <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
+                  <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
+                  </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- Book 3 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
-              </div>
-            </div>
-          </div>
-          <!-- Book 4 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
-              </div>
-            </div>
-          </div>
+          <?php endforeach; ?>
         </div>
         <div class="mt-10">
           <div class="swiper-pagination"></div>
@@ -340,79 +286,34 @@ $auth = new auth($db);
 
       <!-- 🔹 Second Row Slider -->
       <div class="swiper mySwiper2">
-        <div class="swiper-wrapper">
-          <!-- Book 5 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
-              </div>
-            </div>
-          </div>
-          <!-- Book 6 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+        <div class="swiper-wrapper ">
+          <!-- Book 1 -->
+          <?php foreach ($books as $book): ?>
+            <div class="swiper-slide">
+              <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+                <div class="mb-4">
+                  <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+                    <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
+                      alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
+                  <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
+                  <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
+                  </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- Book 8 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
-              </div>
-            </div>
-          </div>
-          <!-- Book 8 -->
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden"> <img src="https://images.pexels.com/photos/1029141/pexels-photo-1029141.jpeg?auto=compress&cs=tinysrgb&w=200&h=300&fit=crop" alt="The Art of Conscious Living" class="w-full h-full object-cover rounded-lg"> </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight">The Art of Conscious Living</h3>
-                <p class="text-gray-400 text-sm">by Dr. Elena Martinez</p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm">2024</span>
-                </div> <button class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"> Borrow Books </button>
-              </div>
-            </div>
-          </div>
+          <?php endforeach; ?>
         </div>
         <div class="mt-10">
           <div class="swiper-pagination"></div>
         </div>
+      </div>
   </section>
 
   <!-- Footer -->

@@ -31,16 +31,16 @@ $db = (new database())->getConnection(); ?>
 
       <!-- Logo -->
       <div class="flex-shrink-0 text-xl font-bold">
-        <a href="index.html" class="hover:text-gray-300 transition-colors">
+        <a href="./userboard.php" class="hover:text-gray-300 transition-colors">
           <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
         </a>
       </div>
 
       <!-- Navigation Links (≥769px) -->
       <nav class="hidden md:flex flex-grow justify-center gap-8">
-        <a href="index.html" class="text-gray-300 hover:text-white">Home</a>
+        <a href="./userboard.php" class="text-gray-300 hover:text-white">Home</a>
         <a href="#" class="text-gray-300 hover:text-white">Category</a>
-        <a href="books.html" class="text-white hover:text-gray-300">Books</a>
+        <a href="./user-borrow.php" class="text-white hover:text-gray-300">Books</a>
         <a href="#" class="text-gray-300 hover:text-white">Suggest</a>
       </nav>
 
