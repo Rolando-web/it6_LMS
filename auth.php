@@ -1,7 +1,4 @@
 <?php
-
-session_start();
-
 class auth
 {
 
@@ -88,9 +85,12 @@ class auth
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['password'])) {
+      $_SESSION['user_id'] = $user['id'];
+      $_SESSION['user_first_name'] = $user['first_name'];
+      $_SESSION['user_last_name'] = $user['last_name'];
+      $_SESSION['user_role'] = $user['roles'];
       return $user;
     }
-
     return false;
   }
 
@@ -115,7 +115,7 @@ class auth
 
   public function getTotalusers()
   {
-    $stmt = $this->conn->query("SELECT COUNT(*) as total FROM books");
+    $stmt = $this->conn->query("SELECT COUNT(*) as total FROM users");
     return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
   }
 
@@ -141,7 +141,10 @@ class auth
 
   public function user()
   {
-    return $_SESSION['user_id'] ?? null;
+    return [
+      'first_name' => $_SESSION['user_first_name'] ?? 'Guest',
+      'last_name'  => $_SESSION['user_last_name']  ?? ''
+    ];
   }
 
 

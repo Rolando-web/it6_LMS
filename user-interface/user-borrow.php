@@ -1,7 +1,43 @@
-<?php require '../database.php';
+<?php
+session_start();
 require '../auth.php';
+require '../admin/BookController.php';
+require '../admin/transactionControll.php';
 
-$db = (new database())->getConnection(); ?>
+
+$database = new Database();
+$books = $database->getBooks();
+$library = new Library($database->pdo);
+
+$auth = new auth($database);
+
+if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
+  header('Location: ../login.php');
+  exit;
+}
+
+
+// Handle borrow request
+if (isset($_POST['borrow'])) {
+  $user_id = $_POST['user_id'];
+  $book_id = $_POST['book_id'];
+  $duration = $_POST['duration'];
+
+  if (!$user_id) {
+    die("Error: user_id is missing. Did you login?");
+  }
+
+  $message = $library->borrowBook($user_id, $book_id, $duration);
+
+  header('Content-Type: application/json');
+  echo json_encode(["status" => "ok", "message" => $message]);
+  exit;
+}
+
+
+
+
+?>
 <!doctype html>
 <html lang="en">
 
@@ -145,31 +181,42 @@ $db = (new database())->getConnection(); ?>
     <!-- Books Grid -->
     <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
       <!-- PHP PHP PHP PHP LOOP -->
-      <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-        <div class="mb-4">
-          <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-            <img src="../image/willan.jpg"
-              alt="book-image"
-              class="w-full h-full object-cover rounded-lg">
-          </div>
-        </div>
-        <div class="space-y-2">
-          <h3 class="text-white font-medium text-lg leading-tight">The Man</h3>
-          <p class="text-gray-400 text-sm">The Man</p>
-          <div class="flex items-center space-x-2">
-            <div class="flex items-center space-x-1">
-              <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-              <span class="text-yellow-400 text-sm font-medium">The Man</span>
+      <?php foreach ($books as $book): ?>
+        <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+          <div class="swiper-slide">
+            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="mb-4">
+                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+                  <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
+                    alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
+                </div>
+              </div>
+              <div class="space-y-2">
+                <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
+                <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
+                <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
+                </div>
+                <form method="POST">
+                  <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
+                  <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
+
+                  <button type="button"
+                    class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"
+                    data-book-id="<?= $book['id'] ?>"
+                    data-book-title="<?= htmlspecialchars($book['title']) ?>"
+                    data-book-author="<?= htmlspecialchars($book['author']) ?>">
+                    Borrow Book
+                  </button>
+                </form>
+
+              </div>
             </div>
-            <span class="text-gray-500 text-sm">$The Man</span>
           </div>
-          <button onclick="openBorrowModal()" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4">
-            Borrow Book
-          </button>
         </div>
-      </div>
+      <?php endforeach; ?>
     </div>
 
     <!-- Load More Button -->
@@ -184,7 +231,7 @@ $db = (new database())->getConnection(); ?>
   </main>
 
   <!-- Borrow Modal -->
-  <div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
     <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
       <div class="text-center mb-6">
         <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -226,7 +273,7 @@ $db = (new database())->getConnection(); ?>
   </div>
 
   <!-- Success Modal -->
-  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-5">
     <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
       <div class="text-center">
         <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -243,6 +290,81 @@ $db = (new database())->getConnection(); ?>
     </div>
   </div>
   <script src="../user-interface/user.js"></script>
+  <script>
+    document.querySelectorAll(".openBorrowModal").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const bookId = btn.dataset.bookId;
+        const title = btn.dataset.bookTitle;
+        const author = btn.dataset.bookAuthor;
+
+        document.getElementById("borrowBookTitle").textContent = title;
+        document.getElementById("borrowBookAuthor").textContent = author;
+
+        // store bookId in confirm button
+        document.getElementById("confirmBorrow").dataset.bookId = bookId;
+
+        document.getElementById("borrowModal").classList.remove("hidden");
+
+        // Close Success Modal
+        if (closeSuccess) {
+          closeSuccess.addEventListener("click", () => {
+            successModal.classList.add("hidden");
+          });
+        }
+        // Extra: close modal if you click outside of it
+        [borrowModal, successModal].forEach((modal) => {
+          if (modal) {
+            modal.addEventListener("click", (e) => {
+              if (e.target === modal) {
+                modal.classList.add("hidden");
+              }
+            });
+          }
+        });
+
+        // Cancel Borrow → Close Borrow Modal
+        if (cancelBorrow) {
+          cancelBorrow.addEventListener("click", () => {
+            borrowModal.classList.add("hidden");
+          });
+        }
+      });
+    });
+
+
+    // handle duration → returnDate
+    document.getElementById("confirmBorrow").addEventListener("click", () => {
+      const bookId = document.getElementById("confirmBorrow").dataset.bookId;
+      const userId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
+      const duration = document.getElementById("borrowDuration").value;
+      const returnDate = document.getElementById("returnDate").value;
+
+      fetch("", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: `borrow=1&book_id=${bookId}&user_id=${userId}&duration=${duration}&return_date=${returnDate}`
+        })
+        .then(res => res.json())
+        .then(data => {
+          // Hide borrow modal
+          document.getElementById("borrowModal").classList.add("hidden");
+
+          // Show success modal
+          document.getElementById("successModal").classList.remove("hidden");
+
+          // Optionally insert message
+          if (data.message) {
+            document.querySelector("#successModal h3").textContent = data.message;
+          }
+        })
+        .catch(err => {
+          console.error("Borrow failed:", err);
+          alert("Something went wrong.");
+        });
+    });
+  </script>
 </body>
 
 </html>

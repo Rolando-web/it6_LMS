@@ -1,9 +1,10 @@
 <?php
-require './admin/BookController.php';
+session_start();
 require 'auth.php';
+require 'database.php';
 
-$DB = (new Database())->__construct();
-$auth = new auth($DB);
+$db = (new database())->getConnection();
+$auth = new auth($db);
 
 $message = '';
 
@@ -13,19 +14,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $user = $auth->login($email, $password);
 
-
   if ($user) {
-    $_SESSION['users_id'] = $user['id'];
-    $_SESSION['users_role'] = $user['roles'];
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_role'] = $user['roles'];
 
-    // Role-based redirection
     if ($user['roles'] === 'Admin') {
       header('Location: admin/bookadmin.php');
-      echo "Logged in as: " . $user['roles'];
       exit;
     } elseif ($user['roles'] === 'Users') {
       header('Location: user-interface/userboard.php');
-      echo "Logged in as: " . $user['roles'];
       exit;
     } else {
       $message = 'Unknown role. Access denied.';

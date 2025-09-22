@@ -1,9 +1,22 @@
 <?php
 require_once 'BookController.php';
+require '../auth.php';
 session_start();
 
 $database = new Database();
 $books = $database->getBooks();
+$auth = new auth($database);
+
+if (isset($_POST['logout'])) {
+    $auth->logout();
+    header('Location: ../login.php');
+    exit;
+}
+
+if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
+    header('Location: ../login.php');
+    exit;
+}
 
 $message = '';
 if (isset($_SESSION['message'])) {
@@ -144,20 +157,25 @@ $books = $database->tableBooks($limit, $offset);
                         <i class="bi bi-book me-2"></i>
                         Books
                     </a>
+                    <a class="nav-link text-light py-3 px-3" href="../admin/transaction.php" style="font-size: 16px;">
+                        <i class="bi bi-book me-2"></i>
+                        Transaction
+                    </a>
                     <a class="nav-link text-light py-3 px-3" href="../admin/useradmin.php" style="font-size: 16px;">
                         <i class="bi bi-people me-2"></i>
                         Users
                     </a>
                 </nav>
             </div>
-
-            <div class="position-absolute bottom-0 w-100 p-4">
-                <a href="../login.php" class="text-decoration-none">
-                    <button class="btn text-light d-flex align-items-center" style="font-size: 16px;">
-                        <i class="bi bi-box-arrow-right me-2"></i>
-                        Log Out
-                    </button></a>
-            </div>
+            <form method="POST">
+                <div class="position-absolute bottom-0 w-100 p-4">
+                    <a href="../login.php" class="text-decoration-none">
+                        <button class="btn text-light d-flex align-items-center" name="logout" style="font-size: 16px;">
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            Log Out
+                        </button></a>
+                </div>
+            </form>
         </div>
 
         <!-- Main Content -->
@@ -170,19 +188,57 @@ $books = $database->tableBooks($limit, $offset);
                     </button>
                     <h2 class="text-light mb-0">Book Management</h2>
                 </div>
-                <div class="d-flex align-items-center">
-                    <div class="d-none d-sm-block text-end me-3">
-                        <div class="text-light">Pocholo Basuge</div>
-                        <small class="text-white opacity-50">Admin</small>
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- Right: Profile Info -->
+                    <div class="d-flex align-items-center">
+                        <!-- Desktop View -->
+                        <div class="d-none d-sm-block text-end me-3">
+                            <div class="text-light">
+                                <?php
+                                $user = $auth->user();
+                                if ($user && isset($user['first_name'], $user['last_name'])) {
+                                    echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
+                                } else {
+                                    echo 'Guest';
+                                }
+                                ?>
+                            </div>
+                            <small class="text-white opacity-50">Admin</small>
+                        </div>
+
+                        <!-- Mobile Dropdown -->
+                        <div class="dropdown d-sm-none">
+                            <a
+                                href="#"
+                                class="d-flex align-items-center"
+                                id="profileDropdown"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img
+                                    src="../image/willan.jpg"
+                                    alt="Profile"
+                                    class="rounded-circle"
+                                    width="40"
+                                    height="40" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                                <li><span class="dropdown-item-text fw-bold">Pocholo Basuge</span></li>
+                                <li><span class="dropdown-item-text text-muted">Admin</span></li>
+                            </ul>
+                        </div>
+
+                        <!-- Desktop Profile Image -->
+                        <img
+                            src="../image/willan.jpg"
+                            alt="Profile"
+                            class="rounded-circle d-none d-sm-block"
+                            width="40"
+                            height="40" />
                     </div>
-                    <img
-                        src="../image/willan.jpg"
-                        alt="Profile"
-                        class="rounded-circle"
-                        width="40"
-                        height="40" />
                 </div>
             </div>
+
+
 
             <!-- Controls -->
             <div class="p-4 w-100">
