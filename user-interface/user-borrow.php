@@ -44,6 +44,7 @@ if (isset($_POST['borrow'])) {
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Collection - Home Library</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -74,7 +75,7 @@ if (isset($_POST['borrow'])) {
 
       <!-- Navigation Links (≥769px) -->
       <nav class="hidden md:flex flex-grow justify-center gap-8">
-        <a href="./userboard.php" class="text-gray-300 hover:text-white">Home</a>
+        <a href="./user-home.php" class="text-gray-300 hover:text-white">Home</a>
         <a href="#" class="text-gray-300 hover:text-white">Category</a>
         <a href="./user-borrow.php" class="text-white hover:text-gray-300">Books</a>
         <a href="#" class="text-gray-300 hover:text-white">Suggest</a>
@@ -116,7 +117,7 @@ if (isset($_POST['borrow'])) {
 
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="md:hidden hidden flex flex-col space-y-2 px-4 pt-4 pb-2 bg-gray-800 text-gray-300">
-      <a href="index.html" class="hover:text-white">Home</a>
+      <a href="./user-home.php" class="hover:text-white">Home</a>
       <a href="#" class="hover:text-white">Category</a>
       <a href="books.html" class="hover:text-white">Books</a>
       <a href="#" class="hover:text-white">Suggest</a>

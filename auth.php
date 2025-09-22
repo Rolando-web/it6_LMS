@@ -115,9 +115,17 @@ class auth
 
   public function getTotalusers()
   {
-    $stmt = $this->conn->query("SELECT COUNT(*) as total FROM users");
+    $stmt = $this->conn->query("SELECT COUNT(*) as total FROM users WHERE roles = 'Users'");
     return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
   }
+
+  public function getTotaladmin()
+  {
+    $stmt = $this->conn->query("SELECT COUNT(*) as total FROM users WHERE roles = 'Admin'");
+    return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+  }
+
+
 
   //DELETE USERS
 

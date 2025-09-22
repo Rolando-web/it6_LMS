@@ -8,6 +8,9 @@ $database = new Database();
 $auth = new auth($database->pdo);
 $database = new Database();
 $books = $database->getBooks();
+$totalbooks = $database->getTotalBooks();
+$totalusers = $auth->getTotalusers();
+$totaladmin = $auth->getTotaladmin();
 
 if (isset($_POST['logout'])) {
   $auth->logout();
@@ -31,6 +34,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
   <link rel="stylesheet" href="../src/input.css" />
   <link rel="stylesheet" href="../src/output.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -57,7 +61,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
         </button>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex items-start space-x-4 sm:flex-1 justify-center">
+        <div class="hidden md:flex items-start space-x-6 sm:flex-1 justify-center">
           <a href="./userboard.php" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
             <div class="w-4 h-4 border border-white"></div>
             <span>Home</span>
@@ -77,11 +81,11 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
             </div>
             <span>Books</span>
           </a>
-          <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
+          <a href="../user-interface/user-transaction.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <span>Suggest</span>
+            <span>Transaction</span>
           </a>
         </div>
 
@@ -210,11 +214,11 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
                 </div>
                 <span class="text-lg">Books</span>
               </a>
-              <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
+              <a href="../user-interface/user-transaction.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span class="text-lg">Suggest</span>
+                <span class="text-lg">Transaction</span>
               </a>
             </nav>
           </div>
@@ -259,7 +263,9 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
               </svg>
             </div>
-            <div class="text-4xl font-light text-white mb-2">100+</div>
+            <div class="text-4xl font-light text-white mb-2">
+              <?php echo $totalbooks ?>
+            </div>
             <div class="text-gray-400">Books Available</div>
           </div>
 
@@ -270,19 +276,23 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
               </svg>
             </div>
-            <div class="text-4xl font-light text-white mb-2">100+</div>
+            <div class="text-4xl font-light text-white mb-2">
+              <?php echo $totalusers ?>
+            </div>
             <div class="text-gray-400">Active Members</div>
           </div>
 
           <!-- New Arrivals -->
           <div class="text-center">
             <div class="w-16 h-16 mx-auto mb-4 bg-amber-600 bg-opacity-20 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+              <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 2l7 4v5c0 5.25-3.5 9.75-7 11-3.5-1.25-7-5.75-7-11V6l7-4z" />
               </svg>
             </div>
-            <div class="text-4xl font-light text-white mb-2">100+</div>
-            <div class="text-gray-400">New Arrival Available</div>
+            <div class="text-4xl font-light text-white mb-2">
+              <?php echo $totaladmin ?></div>
+            <div class="text-gray-400">Admin Available</div>
           </div>
         </div>
       </div>

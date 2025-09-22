@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       header('Location: admin/bookadmin.php');
       exit;
     } elseif ($user['roles'] === 'Users') {
-      header('Location: user-interface/userboard.php');
+      header('Location: user-interface/user-home.php');
       exit;
     } else {
       $message = 'Unknown role. Access denied.';

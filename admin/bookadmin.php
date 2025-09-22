@@ -121,6 +121,7 @@ $books = $database->tableBooks($limit, $offset);
     <title>Book Management System - Admin Control</title>
     <meta name="description" content="Admin dashboard for book management system with dark theme interface">
     <link rel="stylesheet" href="../admin/style.css" />
+    <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
