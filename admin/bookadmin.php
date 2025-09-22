@@ -222,7 +222,16 @@ $books = $database->tableBooks($limit, $offset);
                                     height="40" />
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                <li><span class="dropdown-item-text fw-bold">Pocholo Basuge</span></li>
+                                <li><span class="dropdown-item-text fw-bold">
+                                        <?php
+                                        $user = $auth->user();
+                                        if ($user && isset($user['first_name'], $user['last_name'])) {
+                                            echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
+                                        } else {
+                                            echo 'Guest';
+                                        }
+                                        ?>
+                                    </span></li>
                                 <li><span class="dropdown-item-text text-muted">Admin</span></li>
                             </ul>
                         </div>

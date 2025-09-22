@@ -15,22 +15,12 @@ if (isset($_POST['logout'])) {
   exit;
 }
 
-// Handle Image Upload
-$imagePath = null;
-if (!empty($_FILES['image']['name'])) {
-  $targetDir = "../admin/uploads/";
-  if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
-  $fileName = time() . "_" . basename($_FILES["image"]["name"]);
-  $targetFile = $targetDir . $fileName;
-  if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
-    $imagePath = $targetFile;
-  }
-}
 
 if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
   header('Location: ../login.php');
   exit;
 }
+
 
 ?>
 
@@ -51,12 +41,11 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
 <body class="bg-gray-900 text-white font-sans w-full">
   <!-- Background -->
   <div class="min-h-screen relative bg-cover bg-center bg-no-repeat" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.pexels.com/photos/481516/pexels-photo-481516.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">
-
     <!-- Header -->
-    <header class="relative z-10 px-6 py-4">
-      <nav class="flex items-center md:justify-between max-w-10xl mx-auto">
+    <header class="relative z-10 px-4 py-4">
+      <nav class="flex items-center md:justify-between mx-auto">
         <!-- Logo -->
-        <div class="text-xl font-bold flex-1 pr-10 lg-flex-1">
+        <div class="text-xl font-bold flex-1 lg:text-center">
           <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
         </div>
 
@@ -68,7 +57,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
         </button>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex items-start space-x-4 sm:flex-1">
+        <div class="hidden md:flex items-start space-x-4 sm:flex-1 justify-center">
           <a href="./userboard.php" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
             <div class="w-4 h-4 border border-white"></div>
             <span>Home</span>
@@ -96,18 +85,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
           </a>
         </div>
 
-        <!-- Desktop Search and Profile -->
-        <div class="hidden md:flex items-center space-x-4 lg:mr-10">
-          <!-- Search -->
-          <!-- <div class="relative ml-4 hidden md:flex">
-            <input type="text" placeholder="Search title, Author, Isbn" class="bg-gray-800 bg-opacity-50 text-white placeholder-gray-400 px-4 py-2 pr-10 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none w-40 lg:w-50">
-            <svg class="absolute right-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-          </div> -->
-        </div>
-
-        <div class="hidden md:flex items-center space-x-4">
+        <div class="hidden md:flex items-center flex-1 md:justify-end lg:justify-center">
           <!-- Profile with Dropdown -->
           <div class="relative flex items-center space-x-2 md:space-x-2">
             <div class="text-right">
@@ -124,7 +102,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
 
               <div class="text-xs text-gray-400 hidden lg:block">Member</div>
             </div>
-            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center ">
               <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
             </div>
 
@@ -136,11 +114,11 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="dropdownMenu" class="absolute mt-16 w-40 rounded-lg shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 hidden">
-              <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
+            <div id="dropdownMenu" class="absolute w-20 lg:w-40 rounded-lg shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 hidden" style="margin-top: 90px;">
+              <div role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
                 <!-- Logout Link -->
                 <form method="POST">
-                  <button type="submit" name="logout" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
+                  <button type="submit" name="logout" class="text-start block px-4 w-20 lg:w-40 py-2 rounded-lg text-sm text-white hover:bg-gray-700">
                     Logout
                   </button>
                 </form>
@@ -212,7 +190,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
             </div>
 
             <!-- Navigation Links -->
-            <nav class="space-y-4">
+            <nav class="space-y-">
               <a href="./userboard.php" class="flex items-center space-x-3 text-white hover:text-gray-300 transition-colors py-3">
                 <div class="w-5 h-5 border border-white"></div>
                 <span class="text-lg">Home</span>
@@ -246,15 +224,15 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
 
     <!-- Hero Section -->
     <main class="relative z-0 flex-1 flex items-center justify-center px-6" style="background-image: url(../image/wew.png); background-size: cover; background-position: center;">
-      <div class="text-center max-w-4xl mx-auto mt-16 mb-24">
-        <h1 class="text-6xl md:text-7xl lg:text-8xl font-light mb-6 leading-tight">
+      <div class="text-center max-w-3xl mx-auto mt-16 mb-24">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-light mb-6 leading-tight">
           <div class="text-gray-300 mb-2">Welcome to</div>
           <div class="font-normal">
             <span class="text-white">Home</span><span class="text-gray-300">Library</span>
           </div>
         </h1>
 
-        <p class="text-gray-300 text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
+        <p class="text-gray-300 text-sm md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed">
           Discover thousands of books, explore new genres, and embark on endless literary adventures. Your next great read awaits.
         </p>
 
@@ -331,9 +309,9 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
               <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
                 <div class="mb-4">
                   <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-                    <img src="../admin/uploads/<?= htmlspecialchars($book['image']) ?>"
+                    <img src="../admin/<?= htmlspecialchars($book['image'] ?? 'uploads/default.jpg') ?>"
                       alt="<?= htmlspecialchars($book['title']) ?>"
-                      class="w-full h-full object-cover rounded-lg">
+                      class="w-full h-full object-contain  rounded-lg">
                   </div>
                 </div>
                 <div class="space-y-2">
@@ -357,14 +335,15 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
       <!-- 🔹 Second Row Slider -->
       <div class="swiper mySwiper2">
         <div class="swiper-wrapper ">
-          <!-- Book 1 -->
+          <!-- Book 2 -->
           <?php foreach ($books as $book): ?>
             <div class="swiper-slide">
               <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
                 <div class="mb-4">
                   <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-                    <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
-                      alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
+                    <img src="../admin/<?= htmlspecialchars($book['image'] ?? 'uploads/default.jpg') ?>"
+                      alt="<?= htmlspecialchars($book['title']) ?>"
+                      class="w-full h-full object-contain rounded-lg">
                   </div>
                 </div>
                 <div class="space-y-2">
@@ -484,7 +463,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
           <h3 class="text-white font-semibold text-lg mb-2">Stay Updated</h3>
           <p class="text-gray-400 text-sm mb-4">Subscribe to our newsletter for new book arrivals and library updates</p>
           <div class="flex space-x-2">
-            <input type="email" placeholder="Enter your email" class="flex-1 bg-gray-800 text-white placeholder-gray-400 px-4 py-2 rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none text-sm">
+            <input type="email" placeholder="Enter your email" class="flex-1 w-10  bg-gray-800 text-white placeholder-gray-400 px-4 py-2 rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none text-sm">
             <button class="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors text-sm">
               Subscribe
             </button>

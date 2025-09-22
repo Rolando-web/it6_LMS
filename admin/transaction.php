@@ -110,7 +110,7 @@ $users = $library->getTransactions($limit, $offset);
           <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
             <i class="bi bi-list fs-4"></i>
           </button>
-          <h2 class="text-light mb-0 text-sm">Users Management</h2>
+          <h2 class="text-light mb-0 text-sm">Transaction Management</h2>
         </div>
         <div class="d-flex align-items-center">
           <div class="d-flex justify-content-between align-items-center">
@@ -147,7 +147,16 @@ $users = $library->getTransactions($limit, $offset);
                     height="40" />
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                  <li><span class="dropdown-item-text fw-bold">Pocholo Basuge</span></li>
+                  <li><span class="dropdown-item-text fw-bold">
+                      <?php
+                      $user = $auth->user();
+                      if ($user && isset($user['first_name'], $user['last_name'])) {
+                        echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
+                      } else {
+                        echo 'Guest';
+                      }
+                      ?>
+                    </span></li>
                   <li><span class="dropdown-item-text text-muted">Admin</span></li>
                 </ul>
               </div>
