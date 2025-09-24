@@ -22,8 +22,7 @@ class Database
     public function createBook($title, $author, $category, $isbn, $publish_date, $copies, $imagePath)
     {
         try {
-            $sql = "INSERT INTO books (title, author, category,isbn, publish_date, copies, image) 
-                    VALUES (:title, :author,:category, :isbn, :publish_date, :copies, :image)";
+            $sql = "CALL  AddBook(:title, :author,:category, :isbn, :publish_date, :copies, :image)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 ':title' => $title,
@@ -94,6 +93,8 @@ class Database
             return false;
         }
     }
+
+    // pagination function
 
     public function tableBooks($limit = 6, $offset = 0)
     {

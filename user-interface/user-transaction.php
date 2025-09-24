@@ -39,9 +39,9 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
 </head>
 
 <body class="min-h-screen bg-[#101929]">
-  <div class="container mx-auto px-4 py-4">
+  <div class="container mx-auto">
     <!-- Header -->
-    <header class="relative z-10 px-4 py-4 mb-10">
+    <header class="relative z-10 px-4 py-4 mb-10 ">
       <nav class="flex items-center md:justify-between mx-auto">
         <!-- Logo -->
         <div class="text-xl font-bold flex-1 lg:text-center">
@@ -76,11 +76,11 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
             </div>
             <span>Books</span>
           </a>
-          <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
+          <a href="./user-transaction.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <span>Suggest</span>
+            <span>Transaction</span>
           </a>
         </div>
 
@@ -213,7 +213,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span class="text-lg">Suggest</span>
+                <span class="text-lg">Transaction</span>
               </a>
             </nav>
           </div>

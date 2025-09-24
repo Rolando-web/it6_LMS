@@ -253,7 +253,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
     </main>
 
     <!-- Statistics -->
-    <footer class="relative z-0 px-6 py-12">
+    <footer class="relative z-0 px-6 py-12 bg-amber-500">
       <div class="max-w-6xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Books Available -->
@@ -316,9 +316,9 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
           <!-- Book 1 -->
           <?php foreach ($books as $book): ?>
             <div class="swiper-slide">
-              <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+              <div class="bg-gray-800 rounded-xl p-4 hover:bg-gray-750 transition-colors group">
                 <div class="mb-4">
-                  <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+                  <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center mb-4 justify-center relative overflow-hidden">
                     <img src="../admin/<?= htmlspecialchars($book['image'] ?? 'uploads/default.jpg') ?>"
                       alt="<?= htmlspecialchars($book['title']) ?>"
                       class="w-full h-full object-contain  rounded-lg">

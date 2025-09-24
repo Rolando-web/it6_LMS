@@ -13,7 +13,8 @@ if (isset($_POST['logout'])) {
     exit;
 }
 
-if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
+// if wala kay account dika ka login
+if (!$auth->isLoggedIn()) {
     header('Location: ../login.php');
     exit;
 }
@@ -24,7 +25,7 @@ if (isset($_SESSION['message'])) {
     unset($_SESSION['message']);
 }
 
-/* ---------------- CREATE ---------------- */
+// CREATE
 if (isset($_POST['addBook'])) {
     $title = $_POST['title'];
     $author = $_POST['author'];
@@ -46,15 +47,15 @@ if (isset($_POST['addBook'])) {
     }
 
     if ($database->createBook($title, $author, $category, $isbn, $publish_date, $copies, $imagePath)) {
-        $_SESSION['message'] = "✅ Book added successfully!";
+        $_SESSION['message'] = "Book added successfully!";
     } else {
-        $_SESSION['message'] = "❌ Failed to add book.";
+        $_SESSION['message'] = "Failed to add book.";
     }
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
-/* ---------------- UPDATE ---------------- */
+// UPDATE 
 if (isset($_POST['updateBook'])) {
     $id = $_POST['edit_id'];
     $title = $_POST['edit_title'];
@@ -64,7 +65,7 @@ if (isset($_POST['updateBook'])) {
     $publish_date = $_POST['edit_publish_date'];
     $copies = $_POST['edit_copies'];
 
-    $imagePath = $_POST['edit_current_image']; // keep old image
+    $imagePath = $_POST['edit_current_image'];
     if (!empty($_FILES['edit_image']['name'])) {
         $targetDir = "uploads/";
         if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
@@ -76,20 +77,20 @@ if (isset($_POST['updateBook'])) {
     }
 
     if ($database->updateBook($id, $title, $author, $category, $isbn, $publish_date, $copies, $imagePath)) {
-        $_SESSION['message'] = "✏️ Book updated successfully!";
+        $_SESSION['message'] = "Book updated successfully!";
     } else {
-        $_SESSION['message'] = "❌ Failed to update book.";
+        $_SESSION['message'] = "Failed to update book.";
     }
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
-/* ---------------- DELETE ---------------- */
+// DELETE
 if (isset($_POST['delete_id'])) {
     if ($database->deleteBook($_POST['delete_id'])) {
-        $_SESSION['message'] = "🗑️ Book deleted successfully!";
+        $_SESSION['message'] = "Book deleted successfully!";
     } else {
-        $_SESSION['message'] = "❌ Failed to delete book.";
+        $_SESSION['message'] = "Failed to delete book.";
     }
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
@@ -383,7 +384,7 @@ $books = $database->tableBooks($limit, $offset);
                 <!-- Modal -->
                 <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                        <div class="modal-content" style="background-color: #101828; color:white;">
 
                             <!-- Modal Header -->
                             <div class="modal-header">

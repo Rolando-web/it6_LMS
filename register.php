@@ -1,9 +1,9 @@
 <?php
-require './admin/BookController.php';
+require 'database.php';
 require 'auth.php';
 
-$DB = (new Database())->__construct();
-$auth = new auth($DB);
+$db = (new database())->getConnection();
+$auth = new auth($db);
 
 $message = '';
 
