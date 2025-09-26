@@ -21,9 +21,8 @@ if (isset($_POST['logout'])) {
 }
 
 
-
 $user_id = $_SESSION['user_id'] ?? null;
-$activeBorrowings = $library->getActiveBorrowings($user_id);
+$activeBorrowings = $library->getActiveBorrowingsWithUser(16);
 
 ?>
 
@@ -131,28 +130,24 @@ $activeBorrowings = $library->getActiveBorrowings($user_id);
           <tbody class="text-gray-900">
             <?php foreach ($activeBorrowings as $row): ?>
               <?php
-              // Calculate days remaining until due
               $dueDate = new DateTime($row['due_date']);
               $today = new DateTime();
+              $isOverdue = $today > $dueDate;
               $daysRemaining = $today->diff($dueDate)->days;
-              $statusClass = 'bg-green-100 text-green-800';
-              $statusText = "Day $daysRemaining - Excellent";
 
-              if ($daysRemaining < 3) {
-                $statusClass = 'bg-yellow-100 text-yellow-800';
-                $statusText = "Day $daysRemaining - Good";
-              }
-
-              if ($today > $dueDate) {
+              // Status logic
+              if ($isOverdue) {
                 $statusClass = 'bg-red-100 text-red-800';
                 $statusText = "Overdue";
-              }
-
-              // Calculate fee (example: $1 per day overdue)
-              $fee = 0;
-              if ($today > $dueDate) {
-                $overdueDays = $dueDate->diff($today)->days;
-                $fee = $overdueDays * 1; // $1 per day
+                $fee = $row['fee'] ?? ($daysRemaining * 1); // fallback if fee not stored
+              } elseif ($daysRemaining < 3) {
+                $statusClass = 'bg-yellow-100 text-yellow-800';
+                $statusText = "Day $daysRemaining - Good";
+                $fee = 0;
+              } else {
+                $statusClass = 'bg-green-100 text-green-800';
+                $statusText = "Day $daysRemaining - Excellent";
+                $fee = 0;
               }
               ?>
               <tr class="border-b border-gray-100 hover:bg-gray-50">
@@ -167,7 +162,7 @@ $activeBorrowings = $library->getActiveBorrowings($user_id);
                     <?= $statusText ?>
                   </span>
                 </td>
-                <td class="py-4 px-4 font-medium text-red-600" style="color: <?= $today > $dueDate ? 'red' : 'inherit' ?>;">
+                <td class="py-4 px-4 font-medium text-red-600" style="color: <?= $isOverdue ? 'red' : 'inherit' ?>;">
                   $ <?= number_format($fee, 2) ?>
                 </td>
               </tr>
