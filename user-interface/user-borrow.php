@@ -11,10 +11,12 @@ $library = new Library($database->pdo);
 
 $auth = new auth($database);
 
-if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
+if (isset($_POST['logout'])) {
+  $auth->logout();
   header('Location: ../login.php');
   exit;
 }
+
 
 
 // Handle borrow request
@@ -62,187 +64,9 @@ if (isset($_POST['borrow'])) {
 </head>
 
 <body class="bg-gray-900 text-white font-sans">
+  <!-- Visit Header.php -->
+  <?php if (file_exists('Frontend/header.php')) include 'Frontend/header.php'; ?>
   <!-- Header -->
-  <header class="relative z-10 px-4 py-4">
-    <nav class="flex items-center md:justify-between mx-auto">
-      <!-- Logo -->
-      <div class="text-xl font-bold flex-1 lg:text-center">
-        <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
-      </div>
-
-      <!-- Mobile Menu Button -->
-      <button id="mobileMenuBtn" class="md:hidden text-white hover:text-gray-300 transition-colors mx-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-
-      <!-- Navigation Links -->
-      <div class="hidden md:flex items-start space-x-4 sm:flex-1 justify-center">
-        <a href="../user-interface/user-home.php" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
-          <div class="w-4 h-4 border border-white"></div>
-          <span>Home</span>
-        </a>
-        <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 grid grid-cols-2 gap-px">
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-          </div>
-          <span>Category</span>
-        </a>
-        <a href="./user-borrow.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 border border-gray-300 relative">
-            <div class="absolute inset-1 bg-gray-300"></div>
-          </div>
-          <span>Books</span>
-        </a>
-        <a href="./user-transaction.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>Transaction</span>
-        </a>
-      </div>
-
-      <div class="hidden md:flex items-center flex-1 md:justify-end lg:justify-center">
-        <!-- Profile with Dropdown -->
-        <div class="relative flex items-center space-x-2 md:space-x-2">
-          <div class="text-right">
-            <div class="text-sm font-medium hidden lg:block">
-              <?php
-              $user = $auth->user();
-              if ($user && isset($user['first_name'], $user['last_name'])) {
-                echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
-              } else {
-                echo 'Guest';
-              }
-              ?>
-            </div>
-
-            <div class="text-xs text-gray-400 hidden lg:block">Member</div>
-          </div>
-          <div class="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center ">
-            <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
-          </div>
-
-          <!-- Dropdown Toggle -->
-          <button id="dropdownButton" class="ml-2 p-1 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-
-          <!-- Dropdown Menu -->
-          <div id="dropdownMenu" class="absolute w-20 lg:w-40 rounded-lg shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 hidden" style="margin-top: 90px;">
-            <div role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
-              <!-- Logout Link -->
-              <form method="POST">
-                <button type="submit" name="logout" class="text-start block px-4 w-20 lg:w-40 py-2 rounded-lg text-sm text-white hover:bg-gray-700">
-                  Logout
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Mobile Profile (visible on mobile) -->
-      <div class="md:hidden flex items-center">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
-          <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
-        </div>
-      </div>
-    </nav>
-
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-      <div class="fixed top-0 right-0 h-full w-80 bg-gray-900 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out" id="mobileMenuPanel">
-        <!-- Mobile Menu Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-800">
-          <div class="text-lg font-bold">
-            <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
-          </div>
-          <button id="closeMobileMenu" class="text-white hover:text-gray-300 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Mobile Menu Content -->
-        <div class="p-6">
-          <!-- Profile Section -->
-          <div class="flex items-center space-x-3 mb-4 pb-6 border-b border-gray-800">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
-              <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
-            </div>
-            <div>
-              <div class="text-white font-medium">
-                <?php
-                $user = $auth->user();
-                if ($user && isset($user['first_name'], $user['last_name'])) {
-                  echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
-                } else {
-                  echo 'Guest';
-                }
-                ?></div>
-              <div class="text-gray-400 text-sm">Member</div>
-            </div>
-          </div>
-          <div class="p-4">
-            <a href="../login.php" class="text-decoration-none">
-              <button class="btn text-light d-flex align-items-center" style="font-size: 16px;">
-                <i class="bi bi-box-arrow-right me-2"></i>
-                Log Out
-              </button></a>
-          </div>
-
-          <!-- Search -->
-          <div class="mb-6">
-            <div class="relative">
-              <input type="text" placeholder="Search title, Author, Isbn" class="w-full bg-gray-800 bg-opacity-50 text-white placeholder-gray-400 px-4 py-3 pr-10 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none">
-              <svg class="absolute right-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Navigation Links -->
-          <nav class="space-y-">
-            <a href="../user-interface/user-home.php" class="flex items-center space-x-3 text-white hover:text-gray-300 transition-colors py-3">
-              <div class="w-5 h-5 border border-white"></div>
-              <span class="text-lg">Home</span>
-            </a>
-            <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <div class="w-5 h-5 grid grid-cols-2 gap-px">
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-              </div>
-              <span class="text-lg">Category</span>
-            </a>
-            <a href="./user-borrow.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <div class="w-5 h-5 border border-gray-300 relative">
-                <div class="absolute inset-1 bg-gray-300"></div>
-              </div>
-              <span class="text-lg">Books</span>
-            </a>
-            <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span class="text-lg">Transaction</span>
-            </a>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </header>
-
 
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-6 py-8">
@@ -264,20 +88,24 @@ if (isset($_POST['borrow'])) {
             Fiction
           </button>
           <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science">
-            Science & Technology
+            Technology
           </button>
           <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history">
-            History & Biography
+            History
           </button>
           <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business">
-            Business & Economics
+            Business
           </button>
           <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy">
-            Philosophy & Psychology
+            Philosophy
           </button>
           <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts">
-            Arts & Literature
+            Arts
           </button>
+        </div>
+
+        <div>
+          <input type="text" name="" id="" placeholder="Search..." class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
         </div>
 
         <!-- Sort Options -->
@@ -345,67 +173,79 @@ if (isset($_POST['borrow'])) {
     </div>
   </main>
 
-  <!-- Borrow Modal -->
-  <div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
-      <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl font-semibold text-white mb-2">Borrow Book</h3>
-        <p class="text-gray-400 mb-4">You're about to borrow:</p>
-        <p id="borrowBookTitle" class="text-white font-medium text-lg mb-2"></p>
-        <p id="borrowBookAuthor" class="text-gray-400 mb-6"></p>
-      </div>
 
-      <div class="space-y-4 mb-6">
-        <div>
-          <label class="block text-gray-400 text-sm mb-2">Borrow Duration</label>
-          <select id="borrowDuration" class="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none">
-            <option value="7">7 days</option>
-            <option value="14" selected>14 days</option>
-            <option value="21">21 days</option>
-            <option value="30">30 days</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-gray-400 text-sm mb-2">Return Date</label>
-          <input type="date" id="returnDate" class="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none" readonly>
-        </div>
-      </div>
+  <!-- MODAL -->
+  <?php if (file_exists('Frontend/borrow-modal.php')) include 'Frontend/borrow-modal.php'; ?>
+  <!-- MODAL -->'
 
-      <div class="flex space-x-4">
-        <button id="cancelBorrow" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg font-medium transition-colors">
-          Cancel
-        </button>
-        <button id="confirmBorrow" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
-          Confirm Borrow
-        </button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Success Modal -->
-  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-5">
-    <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
-      <div class="text-center">
-        <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl font-semibold text-white mb-2">Book Borrowed Successfully!</h3>
-        <p class="text-gray-400 mb-6">You can find your borrowed books in your account dashboard.</p>
-        <button onclick="" id="closeSuccess" class="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
   <script src="../user-interface/user.js"></script>
+
   <script>
+    // LOADMORE SECTION
+    document.addEventListener("DOMContentLoaded", () => {
+      const books = document.querySelectorAll("#booksGrid > div"); // Select direct children of #booksGrid
+      const totalBooks = books.length;
+      const loadMoreBtn = document.getElementById("loadMoreBtn");
+      let visibleCount = 8; // Show 6 books initially
+
+      // Hide all books beyond the first 8
+      books.forEach((book, index) => {
+        if (index >= visibleCount) {
+          book.style.display = "none"; // Hide extra books
+        }
+      });
+
+      // Load more books on button click
+      loadMoreBtn.addEventListener("click", () => {
+        const nextBatch = Array.from(books).slice(visibleCount, visibleCount + 8);
+        nextBatch.forEach((book) => (book.style.display = "")); // Show hidden books
+        visibleCount += 8;
+
+        // Hide the "Load More" button if all books are shown
+        if (visibleCount >= totalBooks) {
+          loadMoreBtn.style.display = "none";
+        }
+      });
+    });
+    // LOADMORE SECTION
+
+    // Function to update return date based on selected duration
+    function updateReturnDate() {
+      const duration = parseInt(document.getElementById("borrowDuration").value);
+      const borrowDate = new Date(); // Use current date
+      const returnDate = new Date(borrowDate);
+      returnDate.setDate(borrowDate.getDate() + duration);
+      document.getElementById("returnDate").value = returnDate.toISOString().split("T")[0];
+    }
+
+    // Open Borrow Modal
+    document.querySelectorAll(".openBorrowModal").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const bookId = btn.dataset.bookId;
+        const title = btn.dataset.bookTitle;
+        const author = btn.dataset.bookAuthor;
+
+        document.getElementById("borrowBookTitle").textContent = title;
+        document.getElementById("borrowBookAuthor").textContent = author;
+        document.getElementById("confirmBorrow").dataset.bookId = bookId;
+
+        document.getElementById("borrowModal").classList.remove("hidden");
+
+        //  Set initial return date
+        updateReturnDate();
+
+
+        // Update return date when duration changes
+        document.getElementById("borrowDuration").addEventListener("change", () => {
+          updateReturnDate();
+        });
+
+
+      });
+    });
+
+
     document.querySelectorAll(".openBorrowModal").forEach((btn) => {
       btn.addEventListener("click", () => {
         const bookId = btn.dataset.bookId;

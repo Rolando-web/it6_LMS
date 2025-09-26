@@ -68,6 +68,7 @@ if (isset($_POST['addUser'])) {
   <title>Book Management System - Admin Control</title>
   <meta name="description" content="Admin dashboard for book management system with dark theme interface">
   <link rel="stylesheet" href="../admin/style.css" />
+  <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <!-- Bootstrap Icons -->
@@ -218,7 +219,7 @@ if (isset($_POST['addUser'])) {
 
 
           <!-- Table -->
-          <div class="table-responsive" style="overflow-x: auto;">
+          <div class="table-responsive" style="border-radius: 10px;">
             <table class="table table-dark table-hover align-middle">
               <thead>
                 <tr>
@@ -244,18 +245,18 @@ if (isset($_POST['addUser'])) {
                     <td><?= htmlspecialchars($user['roles']) ?></td>
                     <td>
                       <div class="d-flex flex-wrap gap-2">
-                        <button type="button" class="btn btn-sm btn-outline-warning editBtn">
+                        <!-- <button type="button" class="btn btn-sm btn-outline-warning editBtn">
                           <i class="bi bi-pencil"></i>
-                        </button>
+                        </button> -->
                         <form method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
                           <input type="hidden" name="delete_id" value="<?= $user['id'] ?>">
                           <button type="submit" class="btn btn-sm btn-outline-danger">
                             <i class="bi bi-trash"></i>
                           </button>
                         </form>
-                        <button type="button" class="btn btn-sm btn-outline-info" title="View">
+                        <!-- <button type="button" class="btn btn-sm btn-outline-info" title="View">
                           <i class="bi bi-eye"></i>
-                        </button>
+                        </button> -->
                       </div>
                     </td>
                   </tr>
@@ -347,12 +348,8 @@ if (isset($_POST['addUser'])) {
               </div>
             </div>
           </div>
-
-
-
           <!-- Bootstrap JS for mobile sidebar toggle -->
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
           <script src="../admin/script.js"></script>
 </body>
 

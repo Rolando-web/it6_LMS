@@ -281,7 +281,7 @@ $books = $database->tableBooks($limit, $offset);
                 </div>
 
                 <!-- Table -->
-                <div class="table-responsive">
+                <div class="table-responsive" style="border-radius: 10px;">
                     <table class="table table-dark table-hover">
                         <thead class="text-white font-bold">
                             <tr>
@@ -404,14 +404,14 @@ $books = $database->tableBooks($limit, $offset);
                                         <input type="text" class="form-control" id="author" name="author" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="category" class="form-label">Roles</label>
-                                        <select class="form-select" id="category" name="category" required>
+                                        <label for="category" class="form-label">Category</label>
+                                        <select class="form-select" id="category" name="category" required style="background-color: #252525; color: white;">
                                             <option value="Fiction">Fiction</option>
-                                            <option value="Science & Technology">Science & Technology</option>
-                                            <option value="History & Biography">History & Biography</option>
-                                            <option value="Business & Economics">Business & Economics</option>
-                                            <option value="Philosophy & Psychology">Philosophy & Psychology</option>
-                                            <option value="Arts & Literature">Arts & Literature</option>
+                                            <option value="Technology">Technology</option>
+                                            <option value="History">History</option>
+                                            <option value="Business">Business</option>
+                                            <option value="Philosophy">Philosophy</option>
+                                            <option value="Arts">Arts</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
@@ -446,7 +446,7 @@ $books = $database->tableBooks($limit, $offset);
                 <!-- Edit Modal -->
                 <div class="modal fade" id="editBookModal" tabindex="-1">
                     <div class="modal-dialog">
-                        <form method="POST" enctype="multipart/form-data" class="modal-content">
+                        <form method="POST" enctype="multipart/form-data" class="modal-content" style="background-color: #101828; color:white;">
                             <div class="modal-header">
                                 <h5 class="modal-title">Edit Book</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -459,13 +459,13 @@ $books = $database->tableBooks($limit, $offset);
                                 <input type="text" id="edit_author" name="edit_author" class="form-control mb-2" required>
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Category</label>
-                                    <select class="form-select" id="edit_category" name="edit_category" required>
+                                    <select class="form-select" id="edit_category" name="edit_category" required style="background-color: #252525; color: white;">
                                         <option value="Fiction">Fiction</option>
-                                        <option value="Science & Technology">Science & Technology</option>
-                                        <option value="History & Biography">History & Biography</option>
-                                        <option value="Business & Economics">Business & Economics</option>
-                                        <option value="Philosophy & Psychology">Philosophy & Psychology</option>
-                                        <option value="Arts & Literature">Arts & Literature</option>
+                                        <option value="Technology">Technology</option>
+                                        <option value="History">History</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Philosophy">Philosophy</option>
+                                        <option value="Arts">Arts</option>
                                     </select>
                                 </div>
                                 <input type="text" id="edit_isbn" name="edit_isbn" class="form-control mb-2" required>
@@ -489,11 +489,10 @@ $books = $database->tableBooks($limit, $offset);
                         </form>
                     </div>
                 </div>
-
-
-                <!-- Bootstrap JS for mobile sidebar toggle -->
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-                <script src="../admin/script.js"></script>
+            </div>
+            <!-- Bootstrap JS for mobile sidebar toggle -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="../admin/script.js"></script>
 </body>
 
 </html>

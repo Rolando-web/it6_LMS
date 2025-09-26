@@ -118,4 +118,29 @@ class Library
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  // � Get Active Borrowings for a User
+  public function getActiveBorrowings($user_id)
+  {
+    try {
+      $stmt = $this->conn->prepare("
+      SELECT 
+        t.id AS transaction_id,
+        t.book_id,
+        b.title,
+        b.author,
+        t.borrow_date,
+        t.due_date,
+        t.return_date
+      FROM transactions t
+      JOIN books b ON t.book_id = b.id
+      WHERE t.user_id = :user_id AND t.return_date IS NULL
+      ORDER BY t.borrow_date DESC
+    ");
+      $stmt->execute([':user_id' => $user_id]);
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      return [];
+    }
+  }
 }

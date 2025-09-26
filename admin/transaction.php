@@ -44,6 +44,7 @@ $users = $library->getTransactions($limit, $offset);
   <title>Book Management System - Admin Control</title>
   <meta name="description" content="Admin dashboard for book management system with dark theme interface">
   <link rel="stylesheet" href="../admin/style.css" />
+  <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <!-- Bootstrap Icons -->
@@ -175,7 +176,7 @@ $users = $library->getTransactions($limit, $offset);
 
 
       <!-- Table -->
-      <div class="table-responsive p-4" style="overflow-x: auto;">
+      <div class="table-responsive m-4" style="border-radius: 10px;">
         <table class="table table-dark table-hover align-middle">
           <thead>
             <tr>
@@ -196,8 +197,8 @@ $users = $library->getTransactions($limit, $offset);
                 <td><?= htmlspecialchars($row['user_id']) ?></td>
                 <td><?= htmlspecialchars($row['book_id']) ?></td>
                 <td><?= htmlspecialchars($row['borrow_date']) ?></td>
-                <td><?= htmlspecialchars($row['due_date']) ?></td>
-                <td><?= htmlspecialchars($row['return_date']) ?></td>
+                <td><?= htmlspecialchars($row['due_date'] ?? 'N/A') ?></td>
+                <td><?= htmlspecialchars($row['return_date'] ?? 'N/A') ?></td>
                 <td><?= htmlspecialchars($row['overdue_days']) ?></td>
                 <td><?= htmlspecialchars($row['fee']) ?></td>
               </tr>
