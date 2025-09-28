@@ -36,29 +36,23 @@ class auth
         'roles'      => 'Users'
       ]);
     } catch (PDOException $e) {
-      // Optional: log error or handle it gracefully
       echo "Registration failed: " . $e->getMessage();
       return false;
     }
   }
-
+  // MODAL REGISTRATION
   public function Modalregister($first_name, $last_name, $contact, $email, $password, $roles)
   {
     try {
-      //raw password
       $raw_password = $password;
-      // Hash the password securely
       $hash_password = password_hash($password, PASSWORD_DEFAULT);
 
-      // Prepare the SQL query
       $query = "INSERT INTO users (first_name, last_name, contact, email, password, plain_password, roles)
           VALUES (:first_name, :last_name, :contact, :email, :password, :plain_password, :roles)";
 
 
-      // Prepare statement
       $stmt = $this->conn->prepare($query);
 
-      // Execute with bound parameters
       return $stmt->execute([
         'first_name' => $first_name,
         'last_name'  => $last_name,
@@ -69,7 +63,6 @@ class auth
         'roles'      => $roles
       ]);
     } catch (PDOException $e) {
-      // Optional: log error or handle it gracefully
       echo "Registration failed: " . $e->getMessage();
       return false;
     }
@@ -100,6 +93,11 @@ class auth
     $sql = "SELECT * FROM users ORDER BY roles DESC";
     $stmt = $this->conn->query($sql);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function getUserId()
+  {
+    return isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
   }
 
   //pagination function

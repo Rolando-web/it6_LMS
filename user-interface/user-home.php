@@ -24,6 +24,23 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
   exit;
 }
 
+// Handle borrow request
+if (isset($_POST['borrow'])) {
+  $user_id = $_POST['user_id'];
+  $book_id = $_POST['book_id'];
+  $duration = $_POST['duration'];
+
+  if (!$user_id) {
+    die("Error: user_id is missing. Did you login?");
+  }
+
+  $message = $library->borrowBook($user_id, $book_id, $duration);
+
+  header('Content-Type: application/json');
+  echo json_encode(["status" => "ok", "message" => $message]);
+  exit;
+}
+
 
 ?>
 
@@ -129,6 +146,8 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
   <!-- PARA DI GUBOT -->
   <!-- Books Collection -->
   <?php if (file_exists('Frontend/Bcollection.php')) include 'Frontend/Bcollection.php'; ?>
+  <!-- borrow-modal -->
+  <?php if (file_exists('Frontend/borrow-modal.php')) include 'Frontend/borrow-modal.php'; ?>
   <!-- category file -->
   <?php if (file_exists('Frontend/category.php')) include 'Frontend/category.php'; ?>
   <!-- Footer file -->
@@ -138,6 +157,74 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="../user-interface//user.js"></script>
+  <script>
+    // Open Borrow Modal
+    document.querySelectorAll(".openBorrowModal").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const bookId = btn.dataset.bookId;
+        const title = btn.dataset.bookTitle;
+        const author = btn.dataset.bookAuthor;
+
+        document.getElementById("borrowBookTitle").textContent = title;
+        document.getElementById("borrowBookAuthor").textContent = author;
+        document.getElementById("confirmBorrow").dataset.bookId = bookId;
+
+        document.getElementById("borrowModal").classList.remove("hidden");
+
+        //  Set initial return date
+        updateReturnDate();
+
+
+        // Update return date when duration changes
+        document.getElementById("borrowDuration").addEventListener("change", () => {
+          updateReturnDate();
+        });
+
+
+      });
+    });
+
+
+    document.querySelectorAll(".openBorrowModal").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const bookId = btn.dataset.bookId;
+        const title = btn.dataset.bookTitle;
+        const author = btn.dataset.bookAuthor;
+
+        document.getElementById("borrowBookTitle").textContent = title;
+        document.getElementById("borrowBookAuthor").textContent = author;
+
+        // store bookId in confirm button
+        document.getElementById("confirmBorrow").dataset.bookId = bookId;
+
+        document.getElementById("borrowModal").classList.remove("hidden");
+
+        // Close Success Modal
+        if (closeSuccess) {
+          closeSuccess.addEventListener("click", () => {
+            successModal.classList.add("hidden");
+          });
+        }
+        // Extra: close modal if you click outside of it
+        [borrowModal, successModal].forEach((modal) => {
+          if (modal) {
+            modal.addEventListener("click", (e) => {
+              if (e.target === modal) {
+                modal.classList.add("hidden");
+              }
+            });
+          }
+        });
+
+        // Cancel Borrow → Close Borrow Modal
+        if (cancelBorrow) {
+          cancelBorrow.addEventListener("click", () => {
+            borrowModal.classList.add("hidden");
+          });
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>

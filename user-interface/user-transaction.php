@@ -13,6 +13,8 @@ $books = $database->getBooks();
 $totalbooks = $database->getTotalBooks();
 $totalusers = $auth->getTotalusers();
 $totaladmin = $auth->getTotaladmin();
+$countTransactions = $library->countTransactions();
+
 
 if (isset($_POST['logout'])) {
   $auth->logout();
@@ -21,8 +23,12 @@ if (isset($_POST['logout'])) {
 }
 
 
-$user_id = $_SESSION['user_id'] ?? null;
-$activeBorrowings = $library->getActiveBorrowingsWithUser(16);
+$user_id = $auth->getUserId();
+$activeBorrowings = $library->getActiveBorrowingsWithUser($user_id);
+$getTotalActive = $library->getTotalActiveBorrowed($user_id);
+$getTotalTransaction = $library->getTotalTransactions($user_id);
+$getUserTransactions = $library->getUserTransactions($user_id);
+
 
 ?>
 
@@ -41,15 +47,14 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
 </head>
 
 <body class="min-h-screen bg-[#101929]">
+  <!-- Header -->
   <?php if (file_exists('Frontend/header.php')) include 'Frontend/header.php'; ?>
   <!-- Header -->
 
 
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Dashboard Stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <!-- Active Borrowings -->
       <div class="bg-white rounded-xl p-6 text-gray-900">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-sm font-medium text-gray-600">Active Borrowings</h3>
@@ -57,7 +62,7 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
           </svg>
         </div>
-        <div class="text-3xl font-bold mb-2">3</div>
+        <div class="text-3xl font-bold mb-2"><?php echo $getTotalActive ?></div>
         <div class="text-sm text-gray-600">Currently borrowed books</div>
       </div>
 
@@ -85,7 +90,7 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
           </svg>
         </div>
         <div class="flex items-center space-x-2 mb-2">
-          <div class="text-3xl font-bold">$5.00</div>
+          <div class="text-3xl font-bold">₱50.00</div>
           <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">Good</span>
         </div>
         <div class="text-sm text-gray-600">Fees for active borrowings</div>
@@ -99,7 +104,7 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
         </div>
-        <div class="text-3xl font-bold mb-2">7</div>
+        <div class="text-3xl font-bold mb-2"><?php echo $getTotalTransaction ?></div>
         <div class="text-sm text-gray-600">All-time borrowings</div>
       </div>
     </div>
@@ -110,7 +115,7 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
         </svg>
-        <h2 class="text-xl font-semibold text-gray-900">Active Borrowings (3)</h2>
+        <h2 class="text-xl font-semibold text-gray-900">Active Borrowings <?php echo $getTotalActive ?></h2>
       </div>
 
       <div class="overflow-x-auto">
@@ -163,7 +168,7 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
                   </span>
                 </td>
                 <td class="py-4 px-4 font-medium text-red-600" style="color: <?= $isOverdue ? 'red' : 'inherit' ?>;">
-                  $ <?= number_format($fee, 2) ?>
+                  ₱ <?= number_format($fee, 2) ?>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -178,7 +183,7 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
         </svg>
-        <h2 class="text-xl font-semibold text-gray-900">Transaction History (4)</h2>
+        <h2 class="text-xl font-semibold text-gray-900">Transaction History <?php echo $getTotalTransaction ?></h2>
       </div>
 
       <div class="overflow-x-auto">
@@ -195,42 +200,19 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser(16);
             </tr>
           </thead>
           <tbody class="text-gray-900">
-            <tr class="border-b border-gray-100 hover:bg-gray-50">
-              <td class="py-4 px-4 font-medium">TXN-004</td>
-              <td class="py-4 px-4">BK-2024-004</td>
-              <td class="py-4 px-4 font-medium">Pride and Prejudice</td>
-              <td class="py-4 px-4">Jane Austen</td>
-              <td class="py-4 px-4">Dec 10, 2024</td>
-              <td class="py-4 px-4">Dec 13, 2024</td>
-              <td class="py-4 px-4 font-medium text-green-600">$ 0.00</td>
-            </tr>
-            <tr class="border-b border-gray-100 hover:bg-gray-50">
-              <td class="py-4 px-4 font-medium">TXN-005</td>
-              <td class="py-4 px-4">BK-2024-005</td>
-              <td class="py-4 px-4 font-medium">The Catcher in the Rye</td>
-              <td class="py-4 px-4">J.D. Salinger</td>
-              <td class="py-4 px-4">Dec 5, 2024</td>
-              <td class="py-4 px-4">Dec 9, 2024</td>
-              <td class="py-4 px-4 font-medium text-green-600">$ 2.50</td>
-            </tr>
-            <tr class="border-b border-gray-100 hover:bg-gray-50">
-              <td class="py-4 px-4 font-medium">TXN-006</td>
-              <td class="py-4 px-4">BK-2024-006</td>
-              <td class="py-4 px-4 font-medium">Brave New World</td>
-              <td class="py-4 px-4">Aldous Huxley</td>
-              <td class="py-4 px-4">Nov 28, 2024</td>
-              <td class="py-4 px-4">Dec 2, 2024</td>
-              <td class="py-4 px-4 font-medium text-green-600">$ 0.00</td>
-            </tr>
-            <tr class="border-b border-gray-100 hover:bg-gray-50">
-              <td class="py-4 px-4 font-medium">TXN-007</td>
-              <td class="py-4 px-4">BK-2024-007</td>
-              <td class="py-4 px-4 font-medium">The Lord of the Rings</td>
-              <td class="py-4 px-4">J.R.R. Tolkien</td>
-              <td class="py-4 px-4">Nov 20, 2024</td>
-              <td class="py-4 px-4">Nov 25, 2024</td>
-              <td class="py-4 px-4 font-medium text-green-600">$ 0.00</td>
-            </tr>
+            <?php foreach ($getUserTransactions as $row): ?>
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-4 px-4 font-medium"><?= $row['transaction_id'] ?></td>
+                <td class="py-4 px-4"><?= $row['book_id'] ?></td>
+                <td class="py-4 px-4 font-medium"><?= htmlspecialchars($row['title']) ?></td>
+                <td class="py-4 px-4"><?= htmlspecialchars($row['author']) ?></td>
+                <td class="py-4 px-4"><?= date("M j, Y", strtotime($row['borrow_date'])) ?></td>
+                <td class="py-4 px-4"><?= htmlspecialchars($row['return_date'] ?? 'N/A') ?></td>
+                <td class="py-4 px-4 font-medium text-black" style="color: <?= $isOverdue ? 'red' : 'inherit' ?>;">
+                  <?= htmlspecialchars($row['fee']) ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

@@ -19,20 +19,20 @@
           <div class="w-4 h-4 border border-white"></div>
           <span>Home</span>
         </a>
-        <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
+        <a href="../user-interface/user-return.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
           <div class="w-4 h-4 grid grid-cols-2 gap-px">
             <div class="bg-gray-300 w-full h-full"></div>
             <div class="bg-gray-300 w-full h-full"></div>
             <div class="bg-gray-300 w-full h-full"></div>
             <div class="bg-gray-300 w-full h-full"></div>
           </div>
-          <span>Category</span>
+          <span>Books</span>
         </a>
         <a href="./user-borrow.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
           <div class="w-4 h-4 border border-gray-300 relative">
             <div class="absolute inset-1 bg-gray-300"></div>
           </div>
-          <span>Books</span>
+          <span>Collection</span>
         </a>
         <a href="./user-transaction.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,20 +152,20 @@
               <div class="w-5 h-5 border border-white"></div>
               <span class="text-lg">Home</span>
             </a>
-            <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
+            <a href="../user-interface/user-home.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
               <div class="w-5 h-5 grid grid-cols-2 gap-px">
                 <div class="bg-gray-300 w-full h-full"></div>
                 <div class="bg-gray-300 w-full h-full"></div>
                 <div class="bg-gray-300 w-full h-full"></div>
                 <div class="bg-gray-300 w-full h-full"></div>
               </div>
-              <span class="text-lg">Category</span>
+              <span class="text-lg">Books</span>
             </a>
             <a href="./user-borrow.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
               <div class="w-5 h-5 border border-gray-300 relative">
                 <div class="absolute inset-1 bg-gray-300"></div>
               </div>
-              <span class="text-lg">Books</span>
+              <span class="text-lg">Collection</span>
             </a>
             <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

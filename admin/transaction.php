@@ -19,7 +19,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
 }
 
 // Pagination
-$limit = 10;
+$limit = 15;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 

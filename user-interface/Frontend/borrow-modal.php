@@ -1,5 +1,5 @@
 <!-- Borrow Modal -->
-<div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+<div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
   <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
     <div class="text-center mb-6">
       <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -42,7 +42,7 @@
 </div>
 
 <!-- Success Modal -->
-<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-5">
+<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-5">
   <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
     <div class="text-center">
       <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
