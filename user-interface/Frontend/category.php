@@ -24,12 +24,14 @@
         </div>
         <div class="flex items-center justify-between">
           <span class="text-teal-400 font-medium">20 books</span>
-          <button class="text-teal-400 hover:text-teal-300 transition-colors inline-flex items-center space-x-1 text-sm">
-            <span>Explore</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </button>
+          <a href="./user-borrow.php">
+            <button class="text-teal-400 hover:text-teal-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
 
@@ -48,12 +50,14 @@
         </div>
         <div class="flex items-center justify-between">
           <span class="text-blue-400 font-medium">20 books</span>
-          <button class="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center space-x-1 text-sm">
-            <span>Explore</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </button>
+          <a href="./user-borrow.php">
+            <button class="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
 
@@ -72,12 +76,14 @@
         </div>
         <div class="flex items-center justify-between">
           <span class="text-amber-400 font-medium">20 books</span>
-          <button class="text-amber-400 hover:text-amber-300 transition-colors inline-flex items-center space-x-1 text-sm">
-            <span>Explore</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </button>
+          <a href="./user-borrow.php">
+            <button class="text-amber-400 hover:text-amber-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
 
@@ -96,12 +102,14 @@
         </div>
         <div class="flex items-center justify-between">
           <span class="text-purple-400 font-medium">20 books</span>
-          <button class="text-purple-400 hover:text-purple-300 transition-colors inline-flex items-center space-x-1 text-sm">
-            <span>Explore</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </button>
+          <a href="./user-borrow.php">
+            <button class="text-purple-400 hover:text-purple-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
 
@@ -120,12 +128,14 @@
         </div>
         <div class="flex items-center justify-between">
           <span class="text-green-400 font-medium">20 books</span>
-          <button class="text-green-400 hover:text-green-300 transition-colors inline-flex items-center space-x-1 text-sm">
-            <span>Explore</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </button>
+          <a href="./user-borrow.php">
+            <button class="text-green-400 hover:text-green-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
 
@@ -144,12 +154,14 @@
         </div>
         <div class="flex items-center justify-between">
           <span class="text-pink-400 font-medium">20 books</span>
-          <button class="text-pink-400 hover:text-pink-300 transition-colors inline-flex items-center space-x-1 text-sm">
-            <span>Explore</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-            </svg>
-          </button>
+          <a href="./user-borrow.php">
+            <button class="text-pink-400 hover:text-pink-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
     </div>

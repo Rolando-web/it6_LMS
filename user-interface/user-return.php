@@ -57,13 +57,13 @@ foreach ($activeBorrowings as $borrowing) {
 </head>
 
 <body class="bg-gray-900 text-white font-sans">
+
   <!-- Visit Header.php -->
   <?php if (file_exists('Frontend/header.php')) include 'Frontend/header.php'; ?>
   <!-- Header -->
 
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Page Header -->
     <div class="mb-8">
       <h1 class="text-4xl font-light text-white mb-2">Book Collection</h1>
       <p class="text-gray-400 text-lg">Discover and borrow from our extensive collection of books</p>
@@ -71,47 +71,30 @@ foreach ($activeBorrowings as $borrowing) {
 
     <!-- Filters and Controls -->
     <div class="bg-gray-800 rounded-xl p-6 mb-8">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-        <!-- Category Filter -->
-        <div class="flex flex-wrap gap-2">
-          <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all">
-            All Books
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction">
-            Fiction
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science">
-            Technology
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history">
-            History
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business">
-            Business
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy">
-            Philosophy
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts">
-            Arts
-          </button>
+      <form id="filterForm" method="GET" action="<?= $_SERVER['PHP_SELF'] ?>">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+          <div class="flex flex-wrap gap-2">
+            <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all">
+              All Books
+            </button>
+            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
+            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science" onclick="submitForm('science')">Technology</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history" onclick="submitForm('history')">History</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business" onclick="submitForm('business')">Business</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy" onclick="submitForm('philosophy')">Philosophy</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts" onclick="submitForm('arts')">Arts</button>
+          </div>
+          <div class="flex items-center space-x-4">
+            <label class="text-gray-400 text-sm">Sort by:</label>
+            <select id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
+              <option value="title">Title A-Z</option>
+              <option value="author">Author A-Z</option>
+              <option value="year">Publication Year</option>
+              <option value="rating">Rating</option>
+            </select>
+          </div>
         </div>
-
-        <div>
-          <input type="text" name="" id="" placeholder="Search..." class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
-        </div>
-
-        <!-- Sort Options -->
-        <div class="flex items-center space-x-4">
-          <label class="text-gray-400 text-sm">Sort by:</label>
-          <select id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
-            <option value="title">Title A-Z</option>
-            <option value="author">Author A-Z</option>
-            <option value="year">Publication Year</option>
-            <option value="rating">Rating</option>
-          </select>
-        </div>
-      </div>
+      </form>
     </div>
 
     <?php if (isset($_GET['returned'])): ?>
@@ -159,39 +142,7 @@ foreach ($activeBorrowings as $borrowing) {
       <?php endforeach; ?>
     </div>
 
-    <!-- return-modal.php -->
-    <div id="openReturnModal" class="hidden fixed inset-0 text-black bg-opacity-50 flex items-center justify-center">
-      <div class="bg-white p-6 rounded-lg max-w-sm w-full">
-        <h3 class="text-lg font-medium mb-4">Return Book</h3>
-        <form id="returnForm" method="POST" action="user-return.php">
-          <input type="hidden" name="transaction_id" id="returnTransactionId">
-          <p>Are you sure you want to return this book?</p>
-          <div class="mt-4 flex justify-end space-x-2">
-            <button type="button" class="closeReturnModal px-4 py-2 bg-gray-300 rounded">Cancel</button>
-            <button type="submit" name="return_book" class="px-4 py-2 bg-red-500 text-white rounded">Yes</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-5">
-      <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
-        <div class="text-center">
-          <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold text-white mb-2">Book Returned Successfully!</h3>
-          <button onclick="" id="closeSuccess" class="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL FOR BORROW-->
+    <!-- MODAL FOR Return-->
     <?php if (file_exists('Frontend/return-modal.php')) include 'Frontend/return-modal.php'; ?>
     <!-- MODAL -->'
 

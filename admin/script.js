@@ -50,3 +50,19 @@ document.getElementById("edit_image").addEventListener("change", function () {
     document.getElementById("edit_preview").src = URL.createObjectURL(file);
   }
 });
+
+// Active
+document.addEventListener("DOMContentLoaded", function () {
+  const navLinks = document.querySelectorAll(".sidebar .nav-link");
+  const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+
+  navLinks.forEach((link) => {
+    const linkPage = link.getAttribute("href").split("/").pop().toLowerCase();
+
+    if (linkPage === currentPage) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+});

@@ -17,8 +17,6 @@ if (isset($_POST['logout'])) {
   exit;
 }
 
-
-
 // Handle borrow request
 if (isset($_POST['borrow'])) {
   $user_id = $_POST['user_id'];
@@ -36,6 +34,12 @@ if (isset($_POST['borrow'])) {
   exit;
 }
 
+// Handle Category
+$category = $_GET['category'] ?? 'all';
+$search = $_GET['search'] ?? '';
+$sort = $_GET['sort'] ?? 'title';
+
+$filter = $library->getFilteredBooks($category, $search, $sort);
 
 
 
@@ -78,83 +82,68 @@ if (isset($_POST['borrow'])) {
 
     <!-- Filters and Controls -->
     <div class="bg-gray-800 rounded-xl p-6 mb-8">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-        <!-- Category Filter -->
-        <div class="flex flex-wrap gap-2">
-          <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all">
-            All Books
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction">
-            Fiction
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science">
-            Technology
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history">
-            History
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business">
-            Business
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy">
-            Philosophy
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts">
-            Arts
-          </button>
-        </div>
+      <form id="filterForm" method="GET" action="<?= $_SERVER['PHP_SELF'] ?>">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+          <!-- Category Filter -->
+          <div class="flex flex-wrap gap-2">
+            <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all">
+              All Books
+            </button>
+            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
+            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science" onclick="submitForm('science')">Technology</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history" onclick="submitForm('history')">History</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business" onclick="submitForm('business')">Business</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy" onclick="submitForm('philosophy')">Philosophy</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts" onclick="submitForm('arts')">Arts</button>
+          </div>
 
-        <div>
-          <input type="text" name="" id="" placeholder="Search..." class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
+          <div>
+            <input type="text" name="search" id="searchInput" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" placeholder="Search by Title ..." class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
+          </div>
+          <input type="hidden" name="category" id="categoryInput" value="<?= htmlspecialchars($_GET['category'] ?? 'all') ?>">
+          <!-- Sort Options -->
+          <div class="flex items-center space-x-4">
+            <label class="text-gray-400 text-sm">Sort by:</label>
+            <select name="sort" id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none" onchange="submitForm()">
+              <option value="title" <?= $_GET['sort'] ?? 'title' === 'title' ? 'selected' : '' ?>>Title A-Z</option>
+              <option value="author" <?= $_GET['sort'] ?? 'title' === 'author' ? 'selected' : '' ?>>Author A-Z</option>
+              <option value="year" <?= $_GET['sort'] ?? 'title' === 'publish_year' ? 'selected' : '' ?>>Publication Year</option>
+            </select>
+          </div>
         </div>
-
-        <!-- Sort Options -->
-        <div class="flex items-center space-x-4">
-          <label class="text-gray-400 text-sm">Sort by:</label>
-          <select id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
-            <option value="title">Title A-Z</option>
-            <option value="author">Author A-Z</option>
-            <option value="year">Publication Year</option>
-            <option value="rating">Rating</option>
-          </select>
-        </div>
-      </div>
+      </form>
     </div>
 
     <!-- Books Grid -->
     <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-      <!-- PHP PHP PHP PHP LOOP -->
-      <?php foreach ($books as $book): ?>
+      <?php foreach ($filter as $book): ?>
         <div class="bg-gray-800 rounded-xl p-2 hover:bg-gray-750 transition-colors group">
           <div class="swiper-slide">
             <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
               <div class="mb-4">
                 <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-                  <img src="../admin/<?= $book['image'] ?: 'uploads/default.jpg' ?>"
-                    alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
+                  <img src="../admin/<?= $book['image'] ?: 'uploads/default.jpg' ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
                 </div>
               </div>
               <div class="space-y-2">
                 <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
                 <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
                 <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                  <div class="flex items-center space-x-1">
+                    <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
+                    </svg>
+                    <span class="text-yellow-400 text-sm font-medium">4.8</span>
+                  </div>
+                  <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
                 </div>
                 <form method="POST">
                   <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
                   <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
-
-                  <button type="button"
-                    class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"
-                    data-book-id="<?= $book['id'] ?>"
-                    data-book-title="<?= htmlspecialchars($book['title']) ?>"
-                    data-book-author="<?= htmlspecialchars($book['author']) ?>">
+                  <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
                     Borrow Book
                   </button>
                 </form>
-
               </div>
             </div>
           </div>
@@ -180,113 +169,9 @@ if (isset($_POST['borrow'])) {
 
 
   <script src="../user-interface/user.js"></script>
+  <script src="../user-interface/borrow.js"></script>
 
   <script>
-    // LOADMORE SECTION
-    document.addEventListener("DOMContentLoaded", () => {
-      const books = document.querySelectorAll("#booksGrid > div"); // Select direct children of #booksGrid
-      const totalBooks = books.length;
-      const loadMoreBtn = document.getElementById("loadMoreBtn");
-      let visibleCount = 8; // Show 6 books initially
-
-      // Hide all books beyond the first 8
-      books.forEach((book, index) => {
-        if (index >= visibleCount) {
-          book.style.display = "none"; // Hide extra books
-        }
-      });
-
-      // Load more books on button click
-      loadMoreBtn.addEventListener("click", () => {
-        const nextBatch = Array.from(books).slice(visibleCount, visibleCount + 8);
-        nextBatch.forEach((book) => (book.style.display = "")); // Show hidden books
-        visibleCount += 8;
-
-        // Hide the "Load More" button if all books are shown
-        if (visibleCount >= totalBooks) {
-          loadMoreBtn.style.display = "none";
-        }
-      });
-    });
-    // LOADMORE SECTION
-
-    // Function to update return date based on selected duration
-    function updateReturnDate() {
-      const duration = parseInt(document.getElementById("borrowDuration").value);
-      const borrowDate = new Date(); // Use current date
-      const returnDate = new Date(borrowDate);
-      returnDate.setDate(borrowDate.getDate() + duration);
-      document.getElementById("returnDate").value = returnDate.toISOString().split("T")[0];
-    }
-
-    // Open Borrow Modal
-    document.querySelectorAll(".openBorrowModal").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const bookId = btn.dataset.bookId;
-        const title = btn.dataset.bookTitle;
-        const author = btn.dataset.bookAuthor;
-
-        document.getElementById("borrowBookTitle").textContent = title;
-        document.getElementById("borrowBookAuthor").textContent = author;
-        document.getElementById("confirmBorrow").dataset.bookId = bookId;
-
-        document.getElementById("borrowModal").classList.remove("hidden");
-
-        //  Set initial return date
-        updateReturnDate();
-
-
-        // Update return date when duration changes
-        document.getElementById("borrowDuration").addEventListener("change", () => {
-          updateReturnDate();
-        });
-
-
-      });
-    });
-
-
-    document.querySelectorAll(".openBorrowModal").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const bookId = btn.dataset.bookId;
-        const title = btn.dataset.bookTitle;
-        const author = btn.dataset.bookAuthor;
-
-        document.getElementById("borrowBookTitle").textContent = title;
-        document.getElementById("borrowBookAuthor").textContent = author;
-
-        // store bookId in confirm button
-        document.getElementById("confirmBorrow").dataset.bookId = bookId;
-
-        document.getElementById("borrowModal").classList.remove("hidden");
-
-        // Close Success Modal
-        if (closeSuccess) {
-          closeSuccess.addEventListener("click", () => {
-            successModal.classList.add("hidden");
-          });
-        }
-        // Extra: close modal if you click outside of it
-        [borrowModal, successModal].forEach((modal) => {
-          if (modal) {
-            modal.addEventListener("click", (e) => {
-              if (e.target === modal) {
-                modal.classList.add("hidden");
-              }
-            });
-          }
-        });
-
-        // Cancel Borrow → Close Borrow Modal
-        if (cancelBorrow) {
-          cancelBorrow.addEventListener("click", () => {
-            borrowModal.classList.add("hidden");
-          });
-        }
-      });
-    });
-
-
     // handle duration → returnDate
     document.getElementById("confirmBorrow").addEventListener("click", () => {
       const bookId = document.getElementById("confirmBorrow").dataset.bookId;
@@ -303,13 +188,11 @@ if (isset($_POST['borrow'])) {
         })
         .then(res => res.json())
         .then(data => {
-          // Hide borrow modal
-          document.getElementById("borrowModal").classList.add("hidden");
 
-          // Show success modal
+          document.getElementById("borrowModal").classList.add("hidden");
           document.getElementById("successModal").classList.remove("hidden");
 
-          // Optionally insert message
+
           if (data.message) {
             document.querySelector("#successModal h3").textContent = data.message;
           }

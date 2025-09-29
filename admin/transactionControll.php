@@ -50,8 +50,6 @@ class Library
   {
     try {
       $this->conn->beginTransaction();
-
-      // Get transaction details
       $stmt = $this->conn->prepare("SELECT book_id, due_date, return_date FROM transactions where transaction_id = :transaction_id FOR UPDATE");
       $stmt->execute([':transaction_id' => $transaction_id]);
       $transaction = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -60,7 +58,6 @@ class Library
         throw new Exception("Transaction not found.");
       }
 
-      // Check if already returned
       if ($transaction['return_date'] !== null) {
         throw new Exception("Book already returned.");
       }
@@ -68,7 +65,6 @@ class Library
       $book_id = $transaction['book_id'];
       $due_date = $transaction['due_date'];
 
-      // Update transaction with return date and calculate fee
       $stmt = $this->conn->prepare("
             UPDATE transactions 
             SET return_date = CURDATE(),
@@ -81,7 +77,6 @@ class Library
         ':transaction_id' => $transaction_id
       ]);
 
-      // Increase book copies
       $stmt = $this->conn->prepare("UPDATE books set copies = copies + 1 WHERE id = :book_id");
       $stmt->execute([':book_id' => $book_id]);
 
@@ -124,6 +119,7 @@ class Library
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  // GetActiveBorrowing ni User
   public function getActiveBorrowingsWithUser($user_id)
   {
     try {
@@ -149,7 +145,7 @@ class Library
     }
   }
 
-
+  // Total borrowed by user
   public function getTotalActiveBorrowed($user_id)
   {
     try {
@@ -167,6 +163,7 @@ class Library
     }
   }
 
+  // Total transaction by User
   public function getTotalTransactions($user_id)
   {
     $stmt = $this->conn->prepare("
@@ -179,6 +176,7 @@ class Library
     return $result['total'] ?? 0;
   }
 
+  // Total transaction by User
   public function getUserTransactions($user_id)
   {
     $stmt = $this->conn->prepare("
@@ -198,6 +196,36 @@ class Library
         ORDER BY t.borrow_date DESC");
 
     $stmt->execute([':user_id' => $user_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Category Function
+  public function getFilteredBooks($category = 'all', $search = '', $sort = 'title')
+  {
+    $sql = "SELECT * FROM books WHERE 1=1";
+    $params = [];
+
+    if ($category !== 'all') {
+      $sql .= " AND category = :category";
+      $params[':category'] = $category;
+    }
+
+    if (!empty($search)) {
+      $sql .= " and (id LIKE :search OR title LIKE :search OR ISBN LIKE :search)";
+      $params[':search'] = "%$search%";
+    }
+    $allowed_sorts = ['title', 'author', 'publish_year'];
+    $sort = in_array($sort, $allowed_sorts) ? $sort : 'title';
+
+    if ($sort === 'year') {
+      $sql .= " ORDER BY publish_year";
+    } else {
+      $sql .= " ORDER BY $sort";
+    }
+
+    // Execute query
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 }

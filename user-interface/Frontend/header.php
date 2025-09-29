@@ -16,27 +16,31 @@
       <!-- Navigation Links -->
       <div class="hidden md:flex items-start space-x-4 sm:flex-1 justify-center">
         <a href="../user-interface/user-home.php" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
-          <div class="w-4 h-4 border border-white"></div>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 22V12h6v10" />
+          </svg>
+
           <span>Home</span>
         </a>
         <a href="../user-interface/user-return.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 grid grid-cols-2 gap-px">
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-          </div>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 6v12a1 1 0 001 1h6a1 1 0 011 1V6a1 1 0 00-1-1H4a1 1 0 00-1 1zm18-1h-6a1 1 0 00-1 1v14a1 1 0 011-1h6a1 1 0 001-1V6a1 1 0 00-1-1z" />
+          </svg>
           <span>Books</span>
         </a>
         <a href="./user-borrow.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 border border-gray-300 relative">
-            <div class="absolute inset-1 bg-gray-300"></div>
-          </div>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 19V5a1 1 0 011-1h2a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1zm6 0V5a1 1 0 011-1h2a1 1 0 011 1v14a1 1 0 01-1 1h-2a1 1 0 01-1-1zm6 0V5a1 1 0 011-1h2a1 1 0 011 1v14a1 1 0 01-1 1h-2a1 1 0 01-1-1z" />
+          </svg>
           <span>Collection</span>
         </a>
         <a href="./user-transaction.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 21">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l3 3 5-5m0 6l6-6L21 13" />
+            <text x="10" y="15" font-size="12" font-family="sans-serif">$</text>
           </svg>
           <span>Transaction</span>
         </a>
@@ -153,23 +157,23 @@
               <span class="text-lg">Home</span>
             </a>
             <a href="../user-interface/user-home.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <div class="w-5 h-5 grid grid-cols-2 gap-px">
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-              </div>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 6v12a1 1 0 001 1h6a1 1 0 011 1V6a1 1 0 00-1-1H4a1 1 0 00-1 1zm18-1h-6a1 1 0 00-1 1v14a1 1 0 011-1h6a1 1 0 001-1V6a1 1 0 00-1-1z" />
+              </svg>
               <span class="text-lg">Books</span>
             </a>
             <a href="./user-borrow.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <div class="w-5 h-5 border border-gray-300 relative">
-                <div class="absolute inset-1 bg-gray-300"></div>
-              </div>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 19V5a1 1 0 011-1h2a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1zm6 0V5a1 1 0 011-1h2a1 1 0 011 1v14a1 1 0 01-1 1h-2a1 1 0 01-1-1zm6 0V5a1 1 0 011-1h2a1 1 0 011 1v14a1 1 0 01-1 1h-2a1 1 0 01-1-1z" />
+              </svg>
               <span class="text-lg">Collection</span>
             </a>
             <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 21">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l3 3 5-5m0 6l6-6L21 13" />
+                <text x="10" y="15" font-size="12" font-family="sans-serif">$</text>
               </svg>
               <span class="text-lg">Transaction</span>
             </a>
