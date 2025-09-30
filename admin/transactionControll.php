@@ -228,4 +228,15 @@ class Library
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  // Activity LOG
+  // In your Library class
+  public function getActivityLogs($limit, $offset)
+  {
+    $stmt = $this->conn->prepare("SELECT * FROM activity_logs ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
+    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 }

@@ -68,7 +68,7 @@ $users = $library->getTransactions($limit, $offset);
           <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
             <i class="bi bi-list fs-4"></i>
           </button>
-          <h2 class="text-light mb-0">Transaction Management</h2>
+          <h2 class="text-light mb-0">User Activity Log</h2>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <!-- Right: Profile Info -->
@@ -130,32 +130,25 @@ $users = $library->getTransactions($limit, $offset);
       </div>
 
 
-      <!-- Table -->
       <div class="table-responsive m-4" style="border-radius: 10px;">
         <table class="table table-dark table-hover align-middle">
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">User_id</th>
-              <th scope="col">Book_id</th>
-              <th scope="col">Borrow_date</th>
-              <th scope="col">Due_date</th>
-              <th scope="col">Return_date</th>
-              <th scope="col">Overdue_date</th>
-              <th scope="col">Fee</th>
+              <th scope="col">User ID</th>
+              <th scope="col">Action</th>
+              <th scope="col">Details</th>
+              <th scope="col">Timestamp</th>
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($library->getTransactions($limit, $offset) as $row): ?>
+            <?php foreach ($library->getActivityLogs($limit, $offset) as $row): ?>
               <tr>
-                <td><?= htmlspecialchars($row['transaction_id']) ?></td>
+                <td><?= htmlspecialchars($row['id']) ?></td>
                 <td><?= htmlspecialchars($row['user_id']) ?></td>
-                <td><?= htmlspecialchars($row['book_id']) ?></td>
-                <td><?= htmlspecialchars($row['borrow_date']) ?></td>
-                <td><?= htmlspecialchars($row['due_date'] ?? 'N/A') ?></td>
-                <td><?= htmlspecialchars($row['return_date'] ?? 'N/A') ?></td>
-                <td><?= htmlspecialchars($row['overdue_days']) ?></td>
-                <td><?= htmlspecialchars($row['fee']) ?></td>
+                <td><?= htmlspecialchars($row['action']) ?></td>
+                <td><?= htmlspecialchars($row['details']) ?></td>
+                <td><?= htmlspecialchars($row['created_at']) ?></td>
               </tr>
             <?php endforeach; ?>
           </tbody>
