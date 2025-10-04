@@ -1,5 +1,5 @@
   <!-- Header -->
-  <header class="relative z-10 px-4 py-4">
+  <header class="relative z-10 px-4 py-4 bg-[#101929]">
     <nav class="flex items-center md:justify-between mx-auto">
       <!-- Logo -->
       <div class="text-xl font-bold flex-1 lg:text-center">

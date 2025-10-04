@@ -28,7 +28,14 @@ $activeBorrowings = $library->getActiveBorrowingsWithUser($user_id);
 $getTotalActive = $library->getTotalActiveBorrowed($user_id);
 $getTotalTransaction = $library->getTotalTransactions($user_id);
 $getUserTransactions = $library->getUserTransactions($user_id);
+$total_overdue = $library->getTotalOverdueDaysForUser($user_id);
+$overdueFees = $library->getOverdueFeesPerUser($user_id);
 
+if (is_array($overdueFees)) {
+  foreach ($overdueFees as $user_id => $fee) {
+    echo "User $user_id: ₱" . number_format($fee, 2) . "<br>";
+  }
+}
 
 ?>
 
@@ -75,7 +82,7 @@ $getUserTransactions = $library->getUserTransactions($user_id);
           </svg>
         </div>
         <div class="flex items-center space-x-2 mb-2">
-          <div class="text-3xl font-bold">1</div>
+          <div class="text-3xl font-bold"><?php echo $total_overdue; ?></div>
           <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full">Alert</span>
         </div>
         <div class="text-sm text-gray-600">Books past due date</div>
@@ -89,11 +96,19 @@ $getUserTransactions = $library->getUserTransactions($user_id);
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
           </svg>
         </div>
-        <div class="flex items-center space-x-2 mb-2">
-          <div class="text-3xl font-bold">₱50.00</div>
-          <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">Good</span>
-        </div>
-        <div class="text-sm text-gray-600">Fees for active borrowings</div>
+
+        <?php if (is_array($overdueFees) && count($overdueFees) > 0): ?>
+          <?php foreach ($overdueFees as $user_id => $fee): ?>
+            <div class="flex items-center space-x-2 mb-2">
+              <div class="text-3xl font-bold">₱<?= number_format($fee, 2) ?></div>
+              <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">Good</span>
+            </div>
+            <div class="text-sm text-gray-600">Fees for active borrowings</div>
+            <hr class="my-4 border-gray-200">
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="text-sm text-gray-600">No overdue fees found.</div>
+        <?php endif; ?>
       </div>
 
       <!-- Total Transactions -->
@@ -144,7 +159,7 @@ $getUserTransactions = $library->getUserTransactions($user_id);
               if ($isOverdue) {
                 $statusClass = 'bg-red-100 text-red-800';
                 $statusText = "Overdue";
-                $fee = $row['fee'] ?? ($daysRemaining * 1); // fallback if fee not stored
+                $fee = $row['fee'] ?? ($daysRemaining * 50); // fallback if fee not stored
               } elseif ($daysRemaining < 3) {
                 $statusClass = 'bg-yellow-100 text-yellow-800';
                 $statusText = "Day $daysRemaining - Good";

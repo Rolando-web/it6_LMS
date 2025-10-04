@@ -86,11 +86,11 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
           <!-- Category Filter -->
           <div class="flex flex-wrap gap-2">
-            <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all">
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all" onclick="submitForm('all')">
               All Books
             </button>
-            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
-            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science" onclick="submitForm('science')">Technology</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="technology" onclick="submitForm('technology')">Technology</button>
             <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history" onclick="submitForm('history')">History</button>
             <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business" onclick="submitForm('business')">Business</button>
             <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy" onclick="submitForm('philosophy')">Philosophy</button>
@@ -104,7 +104,8 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
           <!-- Sort Options -->
           <div class="flex items-center space-x-4">
             <label class="text-gray-400 text-sm">Sort by:</label>
-            <select name="sort" id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none" onchange="submitForm()">
+            <select name="sort" id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none"
+              onchange="submitForm()">
               <option value="title" <?= $_GET['sort'] ?? 'title' === 'title' ? 'selected' : '' ?>>Title A-Z</option>
               <option value="author" <?= $_GET['sort'] ?? 'title' === 'author' ? 'selected' : '' ?>>Author A-Z</option>
               <option value="year" <?= $_GET['sort'] ?? 'title' === 'publish_year' ? 'selected' : '' ?>>Publication Year</option>
@@ -116,37 +117,40 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
 
     <!-- Books Grid -->
     <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+
       <?php foreach ($filter as $book): ?>
         <div class="bg-gray-800 rounded-xl p-2 hover:bg-gray-750 transition-colors group">
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-                  <img src="../admin/<?= $book['image'] ?: 'uploads/default.jpg' ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
-                </div>
-              </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
-                <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1">
-                    <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    <span class="text-yellow-400 text-sm font-medium">4.8</span>
-                  </div>
-                  <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
-                </div>
-                <form method="POST">
-                  <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
-                  <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
-                  <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
-                    Borrow Book
-                  </button>
-                </form>
+
+
+          <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+            <div class="mb-4">
+              <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+                <img src="../admin/<?= $book['image'] ?: 'uploads/default.jpg' ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
               </div>
             </div>
+
+            <div class="space-y-2">
+              <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
+              <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
+              <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-1">
+                  <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span class="text-yellow-400 text-sm font-medium">4.8</span>
+                </div>
+                <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
+              </div>
+              <form method="POST">
+                <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
+                <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
+                <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
+                  Borrow Book
+                </button>
+              </form>
+            </div>
           </div>
+
         </div>
       <?php endforeach; ?>
     </div>
@@ -172,6 +176,23 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
   <script src="../user-interface/borrow.js"></script>
 
   <script>
+    // For Filter
+    function submitForm(category = null) {
+      const form = document.getElementById("filterForm");
+      const categoryInput = document.getElementById("categoryInput");
+      const buttons = document.querySelectorAll(".filter-btn");
+
+      if (category) {
+        categoryInput.value = category;
+        buttons.forEach((btn) => btn.classList.remove("active"));
+        document
+          .querySelector(`.filter-btn[data-category="${category}"]`)
+          .classList.add("active");
+      }
+
+      form.submit();
+    }
+
     // handle duration → returnDate
     document.getElementById("confirmBorrow").addEventListener("click", () => {
       const bookId = document.getElementById("confirmBorrow").dataset.bookId;

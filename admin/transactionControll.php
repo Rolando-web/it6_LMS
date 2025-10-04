@@ -8,11 +8,10 @@ class Library
     $this->conn = $db;
   }
 
-  // 📌 Borrow a Book
+  // Borrow a Book
   public function borrowBook($user_id, $book_id, $duration = 14)
   {
     try {
-      // check available copies
       $stmt = $this->conn->prepare("SELECT copies FROM books WHERE id = :book_id");
       $stmt->execute([':book_id' => $book_id]);
       $book = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -21,7 +20,6 @@ class Library
         return "This book is not available.";
       }
 
-      // insert into transactions
       $borrow_date = date("Y-m-d");
       $due_date = date("Y-m-d", strtotime("+$duration days"));
 
@@ -145,6 +143,70 @@ class Library
     }
   }
 
+
+
+  // Get Total Overdue Days for User (Including Active Overdue Books)
+  public function getTotalOverdueDaysForUser($user_id)
+  {
+    try {
+      $stmt = $this->conn->prepare("
+            SELECT 
+                CASE 
+                    WHEN return_date IS NOT NULL THEN overdue_days 
+                    ELSE GREATEST(DATEDIFF(CURDATE(), due_date), 0) 
+                END AS overdue_days
+            FROM transactions
+            WHERE user_id = :user_id
+        ");
+      $stmt->execute([':user_id' => $user_id]);
+      $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $total = 0;
+      foreach ($rows as $row) {
+        $total += $row['overdue_days'];
+      }
+
+      return $total;
+    } catch (Exception $e) {
+      return "Error: " . $e->getMessage();
+    }
+  }
+
+  // Get Overdue Fees Per User
+  public function getOverdueFeesPerUser()
+  {
+    try {
+      $stmt = $this->conn->prepare("
+            SELECT 
+                user_id,
+                SUM(
+                    CASE 
+                        WHEN return_date IS NOT NULL THEN fee 
+                        ELSE GREATEST(DATEDIFF(CURDATE(), due_date), 0) * 50 
+                    END
+                ) AS total_overdue_fees
+            FROM transactions
+            WHERE 
+                (return_date IS NOT NULL AND overdue_days > 0) 
+                OR 
+                (return_date IS NULL AND CURDATE() > due_date)
+            GROUP BY user_id
+        ");
+      $stmt->execute();
+      $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $output = [];
+      foreach ($results as $row) {
+        $output[$row['user_id']] = $row['total_overdue_fees'] ?? 0;
+      }
+
+      return $output;
+    } catch (Exception $e) {
+      return "Error: " . $e->getMessage();
+    }
+  }
+
+
   // Total borrowed by user
   public function getTotalActiveBorrowed($user_id)
   {
@@ -162,6 +224,19 @@ class Library
       return 0;
     }
   }
+
+  public function getCountcategory()
+  {
+    $stmt = $this->conn->query("SELECT category, COUNT(*) as count FROM books GROUP BY category");
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $output = [];
+    foreach ($results as $row) {
+      $output[$row['category']] = $row['count'];  // Matches your 8 categories
+    }
+    return $output;
+  }
+
 
   // Total transaction by User
   public function getTotalTransactions($user_id)
@@ -200,7 +275,7 @@ class Library
   }
 
   // Category Function
-  public function getFilteredBooks($category = 'all', $search = '', $sort = 'title')
+  public function getFilteredBooks($category = 'all', $search = '', $sort = 'title', $group_by = null, $having = null)
   {
     $sql = "SELECT * FROM books WHERE 1=1";
     $params = [];
@@ -211,16 +286,21 @@ class Library
     }
 
     if (!empty($search)) {
-      $sql .= " and (id LIKE :search OR title LIKE :search OR ISBN LIKE :search)";
+      $sql .= " AND (id LIKE :search OR title LIKE :search OR ISBN LIKE :search)";
       $params[':search'] = "%$search%";
     }
+
+
     $allowed_sorts = ['title', 'author', 'publish_year'];
     $sort = in_array($sort, $allowed_sorts) ? $sort : 'title';
+    $sql .= " ORDER BY $sort";
 
-    if ($sort === 'year') {
-      $sql .= " ORDER BY publish_year";
-    } else {
-      $sql .= " ORDER BY $sort";
+    if ($group_by) {
+      $sql = str_replace("SELECT *", "SELECT $group_by, COUNT(*) AS count", $sql);
+      $sql .= " GROUP BY $group_by";
+      if ($having) {
+        $sql .= " HAVING $having";
+      }
     }
 
     // Execute query
@@ -228,9 +308,7 @@ class Library
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
-
   // Activity LOG
-  // In your Library class
   public function getActivityLogs($limit, $offset)
   {
     $stmt = $this->conn->prepare("SELECT * FROM activity_logs ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
@@ -238,5 +316,12 @@ class Library
     $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Count total activity logs
+  public function countActivityLogs()
+  {
+    $stmt = $this->conn->query("SELECT COUNT(*) as total FROM activity_logs");
+    return (int) $stmt->fetch(PDO::FETCH_ASSOC)['total'];
   }
 }

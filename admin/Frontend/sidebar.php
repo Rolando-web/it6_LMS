@@ -5,7 +5,7 @@
         <div class="sidebar bg-dark text-light p-0" id="sidebar">
           <div class="p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h4 class="mb-0 fw-bold text-light">
+              <h4 class="mb-0 fw-bold text-light text-2xl">
                 ADMIN<span class="font-light">CONTROL</span>
               </h4>
               <button class="btn btn-sm d-md-none text-light" id="closeSidebar">
@@ -14,11 +14,11 @@
             </div>
 
             <nav class="nav flex-column">
-              <a class="nav-link text-light py-3 px-3" href="#" style="font-size: 16px;">
+              <a class="nav-link text-light py-3 px-3" href="../admin/dashboard-admin.php" style="font-size: 16px;">
                 <i class="bi bi-speedometer2 me-2"></i>
                 Dashboard
               </a>
-              <a class="nav-link text-light py-3 px-3" href="#" style="font-size: 16px;">
+              <a class="nav-link text-light py-3 px-3" href="../admin/category-admin.php" style="font-size: 16px;">
                 <i class="bi bi-collection me-2"></i>
                 Category
               </a>

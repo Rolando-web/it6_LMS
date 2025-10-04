@@ -15,14 +15,14 @@ if (isset($_POST['logout'])) {
   exit;
 }
 
-if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
+if (!$auth->isLoggedIn()) {
   header('Location: ../login.php');
   exit;
 }
 
 
 // Pagination
-$limit = 10; // rows per page
+$limit = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 
@@ -37,7 +37,7 @@ if (isset($_POST['delete_id'])) {
   if ($auth->deleteuser($_POST['delete_id'])) {
     $_SESSION['message'] = "User deleted successfully!";
   } else {
-    $_SESSION['message'] = "❌ Failed to delete user.";
+    $_SESSION['message'] = "Failed to delete user.";
   }
   header("Location: " . $_SERVER['PHP_SELF']);
   exit();
@@ -51,7 +51,7 @@ if (isset($_POST['addUser'])) {
     $_POST['contact'],
     $_POST['email'],
     $_POST['password'],
-    $_POST['roles'] // ✅ Pass the selected role from the form
+    $_POST['roles']
   );
 }
 
@@ -69,6 +69,7 @@ if (isset($_POST['addUser'])) {
   <title>Book Management System - Admin Control</title>
   <meta name="description" content="Admin dashboard for book management system with dark theme interface">
   <link rel="stylesheet" href="../admin/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -90,12 +91,11 @@ if (isset($_POST['addUser'])) {
           <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
             <i class="bi bi-list fs-4"></i>
           </button>
-          <h2 class="text-light mb-0">Book Management</h2>
+          <h2 class="text-light mb-0 text-3xl">Users Management</h2>
         </div>
         <div class="d-flex justify-content-between align-items-center">
-          <!-- Right: Profile Info -->
+
           <div class="d-flex align-items-center">
-            <!-- Desktop View -->
             <div class="d-none d-sm-block text-end me-3">
               <div class="text-light">
                 <?php
@@ -156,17 +156,15 @@ if (isset($_POST['addUser'])) {
         <div class="row p-4">
           <!-- <div>
               <?php if ($message): ?>
-                <div style="color: green; padding-bottom: 18px;"><?php echo htmlspecialchars($message); ?></div>
+                <div style="color: green; padding-bottom: 18px;"><?php echo htmlspecialchars($message); ?>
+
               <?php endif; ?>
             </div> -->
-          <div class="col-6 col-md-4 mb-3 mb-md-0">
-            <button type="button" class="btn btn-info d-flex align-items-center w-20 w-md-auto justify-content-center"
-              data-bs-toggle="modal" data-bs-target="#addUserModal">
-              <i class="bi bi-plus-circle me-2"></i>
-              Add User
-            </button>
-
-          </div>
+          <button type="button" class="btn btn-info d-flex align-items-center w-20 ml-2 w-md-auto justify-content-center"
+            data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add User
+          </button>
         </div>
 
 
@@ -198,19 +196,14 @@ if (isset($_POST['addUser'])) {
                   <td><?= htmlspecialchars($user['roles']) ?></td>
                   <td>
                     <div class="d-flex flex-wrap gap-2">
-                      <button type="button" class="btn btn-sm btn-outline-warning editBtn">
-                        <i class="bi bi-pencil"></i>
-                      </button>
                       <form method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
                         <input type="hidden" name="delete_id" value="<?= $user['id'] ?>">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                          <i class="bi bi-trash"></i>
+                        <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg" title="Delete">
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                          </svg>
                         </button>
                       </form>
-                      <!-- View -->
-                      <button class="btn btn-sm btn-outline-info" title="View" data-bs-toggle="modal" data-bs-target="#bookModal">
-                        <i class="bi bi-eye"></i>
-                      </button>
                     </div>
                   </td>
                 </tr>

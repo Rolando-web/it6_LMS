@@ -1,10 +1,10 @@
 <?php
 class Database
 {
-    private $host = "localhost";   // change if needed
-    private $db   = "it6_LMS";     // change to your DB name
-    private $user = "root";        // your MySQL username
-    private $pass = "";            // your MySQL password
+    private $host = "localhost";
+    private $db   = "it6_LMS";
+    private $user = "root";
+    private $pass = "";
     public $pdo;
 
     public function __construct()
@@ -109,5 +109,54 @@ class Database
     {
         $stmt = $this->pdo->query("SELECT COUNT(*) as total FROM books");
         return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
+
+    public function getRecentlyAddedBooks($days = 3)
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT * FROM books 
+        WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+        ORDER BY created_at DESC
+        LIMIT 5
+    ");
+        $stmt->execute([$days]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getFilteredBooks($category = 'all', $search = '', $sort = 'title', $group_by = null, $having = null)
+    {
+        $sql = "SELECT * FROM books WHERE 1=1";
+        $params = [];
+
+        if ($category !== 'all') {
+            $sql .= " AND category = :category";
+            $params[':category'] = $category;
+        }
+
+        if (!empty($search)) {
+            $sql .= " AND (id LIKE :search OR title LIKE :search OR category LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+
+        $allowed_sorts = ['title', 'author', 'publish_year'];
+        $sort = in_array($sort, $allowed_sorts) ? $sort : 'title';
+        $sql .= " ORDER BY $sort";
+
+        if ($group_by) {
+            $sql = str_replace("SELECT *", "SELECT $group_by, COUNT(*) AS count", $sql);
+            $sql .= " GROUP BY $group_by";
+            if ($having) {
+                $sql .= " HAVING $having";
+            }
+        }
+
+        // Add LIMIT 6 only when search is empty
+        if (empty($search)) {
+            $sql .= " LIMIT 6";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -46,6 +46,7 @@ $users = $library->getTransactions($limit, $offset);
   <title>Book Management System - Admin Control</title>
   <meta name="description" content="Admin dashboard for book management system with dark theme interface">
   <link rel="stylesheet" href="../admin/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -68,7 +69,7 @@ $users = $library->getTransactions($limit, $offset);
           <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
             <i class="bi bi-list fs-4"></i>
           </button>
-          <h2 class="text-light mb-0">User Activity Log</h2>
+          <h2 class="text-light mb-0 text-3xl">User Activity Log</h2>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <!-- Right: Profile Info -->
@@ -222,69 +223,18 @@ $users = $library->getTransactions($limit, $offset);
         </nav>
       </div>
 
-
-      <!-- Modal -->
-      <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-              <form method="POST" id="addUserForm">
-                <div class="mb-3">
-                  <label for="first_name" class="form-label">First Name</label>
-                  <input type="text" class="form-control" id="first_name" name="first_name" required>
-                </div>
-                <div class="mb-3">
-                  <label for="last_name" class="form-label">Last Name</label>
-                  <input type="text" class="form-control" id="last_name" name="last_name" required>
-                </div>
-                <div class="mb-3">
-                  <label for="contact" class="form-label">Contact</label>
-                  <input type="text" class="form-control" id="contact" name="contact" required>
-                </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="mb-3">
-                  <label for="roles" class="form-label">Roles</label>
-                  <select class="form-select" id="roles" name="roles" required>
-                    <option value="Users">Users</option>
-                    <option value="Admin">Admin</option>
-                  </select>
-                </div>
-              </form>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" form="addUserForm" name="addUser" class="btn btn-primary">Register User</button>
-            </div>
-
-          </div>
-        </div>
-      </div>
+    </div>
+  </div>
+  </div>
 
 
 
-      <!-- Bootstrap JS for mobile sidebar toggle -->
-      <!-- Bootstrap JS Bundle -->
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap JS for mobile sidebar toggle -->
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-      <script src="../admin/script.js"></script>
-      <script src="../admin//active.js"></script>
+  <script src="../admin/script.js"></script>
+  <script src="../admin//active.js"></script>
 </body>
 
 </html>

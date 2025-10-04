@@ -46,6 +46,7 @@ $users = $library->getTransactions($limit, $offset);
   <title>Book Management System - Admin Control</title>
   <meta name="description" content="Admin dashboard for book management system with dark theme interface">
   <link rel="stylesheet" href="../admin/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -68,7 +69,7 @@ $users = $library->getTransactions($limit, $offset);
           <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
             <i class="bi bi-list fs-4"></i>
           </button>
-          <h2 class="text-light mb-0">Transaction Management</h2>
+          <h2 class="text-light mb-0 text-3xl">Transaction Management</h2>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <!-- Right: Profile Info -->
