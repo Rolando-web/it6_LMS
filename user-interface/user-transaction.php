@@ -95,6 +95,7 @@ $overdueFees = $library->getOverdueFeesPerUser($user_id);
         if (is_numeric($overdueFees) && $overdueFees > 0): ?>
           <div class="flex items-center space-x-2 mb-2">
             <div class="text-3xl font-bold text-red-500">₱<?= number_format($overdueFees, 2) ?></div>
+            <span><button class="bg-green-300 p-1 px-4 rounded-3xl text-[12px] ml-4 text-black hover:bg-red-300">Pay fees</button></span>
           </div>
           <div class="text-sm text-white">Fees for active borrowings</div>
           <hr class="my-4 border-gray-200">
@@ -174,7 +175,7 @@ $overdueFees = $library->getOverdueFeesPerUser($user_id);
                     <?= $statusText ?>
                   </span>
                 </td>
-                <td class="py-4 px-4 font-medium text-red-400" style="color: <?= $isOverdue ? 'red' : 'inherit' ?>;">
+                <td class="py-4 px-4 font-medium text-red-400" style="color: <?= $isOverdue ? '#e24545' : 'inherit' ?>;">
                   ₱ <?= number_format($fee, 2) ?>
                 </td>
               </tr>
@@ -215,7 +216,7 @@ $overdueFees = $library->getOverdueFeesPerUser($user_id);
                 <td class="py-4 px-4"><?= htmlspecialchars($row['author']) ?></td>
                 <td class="py-4 px-4"><?= date("M j, Y", strtotime($row['borrow_date'])) ?></td>
                 <td class="py-4 px-4"><?= htmlspecialchars($row['return_date'] ?? 'N/A') ?></td>
-                <td class="py-4 px-4 font-medium text-black ">
+                <td class="py-4 px-4 font-medium text-[#e24545] ">
                   <?= htmlspecialchars($row['fee']) ?>
                 </td>
               </tr>

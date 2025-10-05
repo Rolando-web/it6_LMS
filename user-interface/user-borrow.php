@@ -128,8 +128,8 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
     <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
 
       <?php foreach ($filter as $book): ?>
-        <div class="<?= ($book['copies'] == 0 ? 'opacity-50 pointer-events-none' : '') ?> bg-gray-800 rounded-xl p-2 hover:bg-gray-750 transition-colors group">
-          <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+        <div class="bg-gray-800 rounded-xl p-2 hover:bg-gray-750 transition-colors group">
+          <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group <?= ($book['copies'] == 0 ? 'opacity-50' : '') ?>">
             <div class="mb-4">
               <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
                 <img src="../admin/<?= $book['image'] ?: 'uploads/default.jpg' ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
@@ -148,23 +148,24 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
                 </div>
                 <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
               </div>
-
-              <!-- Conditional Button -->
-              <?php if ($book['copies'] > 0): ?>
-                <form method="POST">
-                  <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
-                  <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
-                  <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
-                    Borrow Book
-                  </button>
-                </form>
-              <?php else: ?>
-                <button type="button" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" onclick="findSimilarBooks(<?= $book['id'] ?>)">
-                  Find Similar
-                </button>
-              <?php endif; ?>
             </div>
           </div>
+
+          <!-- Button outside the opacity div so it stays clickable -->
+          <?php if ($book['copies'] > 0): ?>
+            <form method="POST">
+              <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
+              <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
+              <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors mb-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
+                Borrow Book
+              </button>
+            </form>
+          <?php else: ?>
+            <button type="button" class="w-full bg-white hover:bg-gray-300 text-black py-2 px-3 rounded-lg text-sm font-medium transition-colors mb-4"
+              onclick="submitForm('<?= strtolower(htmlspecialchars($book['category'])) ?>')">
+              Find Similar
+            </button>
+          <?php endif; ?>
         </div>
       <?php endforeach; ?>
 

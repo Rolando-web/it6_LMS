@@ -2,12 +2,14 @@
 session_start();
 require '../auth.php';
 require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 
 
 
 $database = new Database();
 $auth = new auth($database->pdo);
-$database = new Database();
+$library = new Library($database->pdo);
+
 $books = $database->getBooks();
 $totalbooks = $database->getTotalBooks();
 $totalusers = $auth->getTotalusers();
@@ -20,12 +22,11 @@ if (isset($_POST['logout'])) {
 }
 
 
-if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
+if (!$auth->isLoggedIn()) {
   header('Location: ../login.php');
   exit;
 }
 
-// Handle borrow request
 if (isset($_POST['borrow'])) {
   $user_id = $_POST['user_id'];
   $book_id = $_POST['book_id'];
@@ -42,6 +43,13 @@ if (isset($_POST['borrow'])) {
   exit;
 }
 
+$category = $_GET['category'] ?? 'all';
+$search = $_GET['search'] ?? '';
+$sort = $_GET['sort'] ?? 'title';
+$categories = ['all', 'fiction', 'technology', 'history', 'business', 'philosophy', 'arts', 'science', 'biology'];
+
+$filter = $library->getFilteredBooks($category, $search, $sort);
+
 
 ?>
 
@@ -56,18 +64,18 @@ if (isset($_POST['borrow'])) {
   <link rel="stylesheet" href="../src/input.css" />
   <link rel="stylesheet" href="../src/output.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <!-- Bootstrap 5 CSS -->
   <title>Home Library</title>
 </head>
+<style>
+
+</style>
 
 <body class="bg-gray-900 text-white font-sans w-full">
-  <!-- Background -->
   <div class="min-h-screen relative bg-cover bg-center bg-no-repeat" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.pexels.com/photos/481516/pexels-photo-481516.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');">
+
     <!-- Header -->
     <?php if (file_exists('Frontend/header.php')) include 'Frontend/header.php'; ?>
     <!-- Header -->
-
-
 
     <!-- Hero Section -->
     <main class="relative z-0 flex-1 flex items-center justify-center px-6" style="background-image: url(../image/wew.png); background-size: cover; background-position: center;">
@@ -101,7 +109,6 @@ if (isset($_POST['borrow'])) {
     <div class="relative z-0 px-6 py-12">
       <div class="max-w-6xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Books Available -->
           <div class="text-center">
             <div class="w-16 h-16 mx-auto mb-4 bg-teal-600 bg-opacity-20 rounded-full flex items-center justify-center">
               <svg class="w-8 h-8 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
