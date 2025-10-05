@@ -1,7 +1,7 @@
 <?php
 session_start();
-require '../admin/BookController.php';
-require '../admin/transactionControll.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 require '../auth.php';
 
 $db = new Database();

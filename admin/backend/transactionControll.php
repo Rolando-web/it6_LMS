@@ -12,6 +12,25 @@ class Library
   public function borrowBook($user_id, $book_id, $duration = 14)
   {
     try {
+      // Check if user already has this book (active transaction)
+      $stmt = $this->conn->prepare("
+      SELECT 1 
+      FROM transactions 
+      WHERE user_id = :user_id 
+        AND book_id = :book_id 
+        AND return_date IS NULL
+    ");
+      $stmt->execute([
+        ':user_id' => $user_id,
+        ':book_id' => $book_id
+      ]);
+      $hasActiveBorrowing = $stmt->fetch(PDO::FETCH_COLUMN);
+
+      if ($hasActiveBorrowing) {
+        return "You already borrow this book!";
+      }
+
+      // Check if book is available
       $stmt = $this->conn->prepare("SELECT copies FROM books WHERE id = :book_id");
       $stmt->execute([':book_id' => $book_id]);
       $book = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -20,13 +39,14 @@ class Library
         return "This book is not available.";
       }
 
+      // Proceed with borrowing
       $borrow_date = date("Y-m-d");
       $due_date = date("Y-m-d", strtotime("+$duration days"));
 
       $stmt = $this->conn->prepare("
-            INSERT INTO transactions (user_id, book_id, borrow_date, due_date)
-            VALUES (:user_id, :book_id, :borrow_date, :due_date)
-        ");
+      INSERT INTO transactions (user_id, book_id, borrow_date, due_date)
+      VALUES (:user_id, :book_id, :borrow_date, :due_date)
+    ");
       $stmt->execute([
         ':user_id' => $user_id,
         ':book_id' => $book_id,
@@ -42,6 +62,7 @@ class Library
       return "Error: " . $e->getMessage();
     }
   }
+
 
   // Return a Book
   public function returnBook($transaction_id)
@@ -146,65 +167,56 @@ class Library
 
 
   // Get Total Overdue Days for User (Including Active Overdue Books)
-  public function getTotalOverdueDaysForUser($user_id)
+  public function getOverdueBookCountForUser($user_id)
   {
     try {
       $stmt = $this->conn->prepare("
-            SELECT 
-                CASE 
-                    WHEN return_date IS NOT NULL THEN overdue_days 
-                    ELSE GREATEST(DATEDIFF(CURDATE(), due_date), 0) 
-                END AS overdue_days
-            FROM transactions
-            WHERE user_id = :user_id
-        ");
+      SELECT COUNT(*) AS total_overdue_books
+      FROM transactions
+      WHERE user_id = :user_id
+        AND return_date IS NULL
+        AND due_date < CURDATE()
+    ");
       $stmt->execute([':user_id' => $user_id]);
-      $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      $total = 0;
-      foreach ($rows as $row) {
-        $total += $row['overdue_days'];
-      }
-
-      return $total;
+      return $result['total_overdue_books'] ?? 0;
     } catch (Exception $e) {
       return "Error: " . $e->getMessage();
     }
   }
+
 
   // Get Overdue Fees Per User
-  public function getOverdueFeesPerUser()
+  public function getOverdueFeesPerUser($user_id)
   {
     try {
       $stmt = $this->conn->prepare("
-            SELECT 
-                user_id,
-                SUM(
-                    CASE 
-                        WHEN return_date IS NOT NULL THEN fee 
-                        ELSE GREATEST(DATEDIFF(CURDATE(), due_date), 0) * 50 
-                    END
-                ) AS total_overdue_fees
-            FROM transactions
-            WHERE 
-                (return_date IS NOT NULL AND overdue_days > 0) 
-                OR 
-                (return_date IS NULL AND CURDATE() > due_date)
-            GROUP BY user_id
-        ");
-      $stmt->execute();
-      $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      SELECT 
+          SUM(
+              CASE 
+                  WHEN return_date IS NOT NULL THEN fee 
+                  ELSE GREATEST(DATEDIFF(CURDATE(), due_date), 0) * 50 
+              END
+          ) AS total_overdue_fees
+      FROM transactions
+      WHERE 
+          user_id = :user_id AND
+          (
+              (return_date IS NOT NULL AND overdue_days > 0) 
+              OR 
+              (return_date IS NULL AND CURDATE() > due_date)
+          )
+    ");
+      $stmt->execute([':user_id' => $user_id]);
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      $output = [];
-      foreach ($results as $row) {
-        $output[$row['user_id']] = $row['total_overdue_fees'] ?? 0;
-      }
-
-      return $output;
+      return $result['total_overdue_fees'] ?? 0;
     } catch (Exception $e) {
       return "Error: " . $e->getMessage();
     }
   }
+
 
 
   // Total borrowed by user

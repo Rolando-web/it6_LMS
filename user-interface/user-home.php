@@ -1,7 +1,8 @@
 <?php
 session_start();
 require '../auth.php';
-require '../admin/BookController.php';
+require '../admin/backend/BookController.php';
+
 
 
 $database = new Database();

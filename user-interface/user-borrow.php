@@ -1,8 +1,8 @@
 <?php
 session_start();
 require '../auth.php';
-require '../admin/BookController.php';
-require '../admin/transactionControll.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 
 
 $database = new Database();
@@ -38,6 +38,7 @@ if (isset($_POST['borrow'])) {
 $category = $_GET['category'] ?? 'all';
 $search = $_GET['search'] ?? '';
 $sort = $_GET['sort'] ?? 'title';
+$categories = ['all', 'fiction', 'technology', 'history', 'business', 'philosophy', 'arts', 'science', 'biology'];
 
 $filter = $library->getFilteredBooks($category, $search, $sort);
 
@@ -66,6 +67,12 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
     }
   </script>
 </head>
+<style>
+  .filter-btn.active {
+    background-color: white !important;
+    color: black !important;
+  }
+</style>
 
 <body class="bg-gray-900 text-white font-sans">
   <!-- Visit Header.php -->
@@ -86,19 +93,21 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
           <!-- Category Filter -->
           <div class="flex flex-wrap gap-2">
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all" onclick="submitForm('all')">
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 <?= $category === 'all' ? 'active' : '' ?>" data-category="all" onclick="submitForm('all')">
               All Books
             </button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="technology" onclick="submitForm('technology')">Technology</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history" onclick="submitForm('history')">History</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business" onclick="submitForm('business')">Business</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy" onclick="submitForm('philosophy')">Philosophy</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts" onclick="submitForm('arts')">Arts</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'fiction' ? 'active' : '' ?>" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'technology' ? 'active' : '' ?>" data-category="technology" onclick="submitForm('technology')">Technology</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'history' ? 'active' : '' ?>" data-category="history" onclick="submitForm('history')">History</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'business' ? 'active' : '' ?>" data-category="business" onclick="submitForm('business')">Business</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'philosophy' ? 'active' : '' ?>" data-category="philosophy" onclick="submitForm('philosophy')">Philosophy</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'arts' ? 'active' : '' ?>" data-category="arts" onclick="submitForm('arts')">Arts</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'science' ? 'active' : '' ?>" data-category="science" onclick="submitForm('science')">Science</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'biology' ? 'active' : '' ?>" data-category="biology" onclick="submitForm('biology')">Biology</button>
           </div>
 
           <div>
-            <input type="text" name="search" id="searchInput" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" placeholder="Search by Title ..." class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
+            <input type="text" name="search" id="searchInput" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" placeholder="Search by Title ..." class="bg-gray-700 text-white mx-4 px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
           </div>
           <input type="hidden" name="category" id="categoryInput" value="<?= htmlspecialchars($_GET['category'] ?? 'all') ?>">
           <!-- Sort Options -->
@@ -119,9 +128,7 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
     <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
 
       <?php foreach ($filter as $book): ?>
-        <div class="bg-gray-800 rounded-xl p-2 hover:bg-gray-750 transition-colors group">
-
-
+        <div class="<?= ($book['copies'] == 0 ? 'opacity-50 pointer-events-none' : '') ?> bg-gray-800 rounded-xl p-2 hover:bg-gray-750 transition-colors group">
           <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
             <div class="mb-4">
               <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
@@ -141,18 +148,26 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
                 </div>
                 <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
               </div>
-              <form method="POST">
-                <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
-                <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
-                <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
-                  Borrow Book
+
+              <!-- Conditional Button -->
+              <?php if ($book['copies'] > 0): ?>
+                <form method="POST">
+                  <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
+                  <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
+                  <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
+                    Borrow Book
+                  </button>
+                </form>
+              <?php else: ?>
+                <button type="button" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4" onclick="findSimilarBooks(<?= $book['id'] ?>)">
+                  Find Similar
                 </button>
-              </form>
+              <?php endif; ?>
             </div>
           </div>
-
         </div>
       <?php endforeach; ?>
+
     </div>
 
     <!-- Load More Button -->
@@ -165,7 +180,6 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
       </button>
     </div>
   </main>
-
 
   <!-- MODAL -->
   <?php if (file_exists('Frontend/borrow-modal.php')) include 'Frontend/borrow-modal.php'; ?>
@@ -184,37 +198,46 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
 
       if (category) {
         categoryInput.value = category;
-        buttons.forEach((btn) => btn.classList.remove("active"));
-        document
-          .querySelector(`.filter-btn[data-category="${category}"]`)
-          .classList.add("active");
+        buttons.forEach((btn) => {
+          btn.classList.remove("active");
+          console.log(`Removed active from ${btn.dataset.category}`); // Debug
+        });
+
+        const activeBtn = document.querySelector(`.filter-btn[data-category="${category}"]`);
+        if (activeBtn) {
+          activeBtn.classList.add("active");
+          console.log(`Added active to ${category}`); // Debug
+        } else {
+          console.error(`No button found for category: ${category}`); // Debug
+        }
       }
 
       form.submit();
     }
+
 
     // handle duration → returnDate
     document.getElementById("confirmBorrow").addEventListener("click", () => {
       const bookId = document.getElementById("confirmBorrow").dataset.bookId;
       const userId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
       const duration = document.getElementById("borrowDuration").value;
-      const returnDate = document.getElementById("returnDate").value;
 
       fetch("", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
-          body: `borrow=1&book_id=${bookId}&user_id=${userId}&duration=${duration}&return_date=${returnDate}`
+          body: `borrow=1&book_id=${bookId}&user_id=${userId}&duration=${duration}`
         })
         .then(res => res.json())
         .then(data => {
-
           document.getElementById("borrowModal").classList.add("hidden");
-          document.getElementById("successModal").classList.remove("hidden");
 
-
-          if (data.message) {
+          if (data.message.includes("already borrow")) {
+            document.getElementById("errorModal").classList.remove("hidden");
+            document.querySelector("#errorModal h3").textContent = data.message;
+          } else {
+            document.getElementById("successModal").classList.remove("hidden");
             document.querySelector("#successModal h3").textContent = data.message;
           }
         })

@@ -1,7 +1,7 @@
 <?php
 session_start();
-require '../admin/BookController.php';
-require '../admin/transactionControll.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 require '../auth.php';
 
 $database = new Database();
@@ -33,6 +33,36 @@ if (isset($_POST['logout'])) {
 if (!$auth->isLoggedIn()) {
   header('Location: ../login.php');
   exit;
+}
+
+// UPDATE 
+if (isset($_POST['updateBook'])) {
+  $id = $_POST['edit_id'];
+  $title = $_POST['edit_title'];
+  $author = $_POST['edit_author'];
+  $category = $_POST['edit_category'];
+  $isbn = $_POST['edit_isbn'];
+  $publish_date = $_POST['edit_publish_date'];
+  $copies = $_POST['edit_copies'];
+
+  $imagePath = $_POST['edit_current_image'];
+  if (!empty($_FILES['edit_image']['name'])) {
+    $targetDir = "uploads/";
+    if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+    $fileName = time() . "_" . basename($_FILES["edit_image"]["name"]);
+    $targetFile = $targetDir . $fileName;
+    if (move_uploaded_file($_FILES["edit_image"]["tmp_name"], $targetFile)) {
+      $imagePath = $targetFile;
+    }
+  }
+
+  if ($database->updateBook($id, $title, $author, $category, $isbn, $publish_date, $copies, $imagePath)) {
+    $_SESSION['message'] = "Book updated successfully!";
+  } else {
+    $_SESSION['message'] = "Failed to update book.";
+  }
+  header("Location: " . $_SERVER['PHP_SELF']);
+  exit();
 }
 
 

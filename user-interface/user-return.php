@@ -1,8 +1,8 @@
 <?php
 session_start();
 require '../auth.php';
-require '../admin/BookController.php';
-require '../admin/transactionControll.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 
 
 $database = new Database();
@@ -65,8 +65,8 @@ foreach ($activeBorrowings as $borrowing) {
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-6 py-8">
     <div class="mb-8">
-      <h1 class="text-4xl font-light text-white mb-2">Book Collection</h1>
-      <p class="text-gray-400 text-lg">Discover and borrow from our extensive collection of books</p>
+      <h1 class="text-4xl font-light text-white mb-2">Borrowed Collection</h1>
+      <p class="text-gray-400 text-lg">Kindly return borrowed books on or before the due date to prevent extra charges for overdue days.</p>
     </div>
 
     <!-- Filters and Controls -->
@@ -75,23 +75,8 @@ foreach ($activeBorrowings as $borrowing) {
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
           <div class="flex flex-wrap gap-2">
             <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all">
-              All Books
+              All Books You Borrowed
             </button>
-            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
-            <button type="button" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science" onclick="submitForm('science')">Technology</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history" onclick="submitForm('history')">History</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business" onclick="submitForm('business')">Business</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy" onclick="submitForm('philosophy')">Philosophy</button>
-            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts" onclick="submitForm('arts')">Arts</button>
-          </div>
-          <div class="flex items-center space-x-4">
-            <label class="text-gray-400 text-sm">Sort by:</label>
-            <select id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
-              <option value="title">Title A-Z</option>
-              <option value="author">Author A-Z</option>
-              <option value="year">Publication Year</option>
-              <option value="rating">Rating</option>
-            </select>
           </div>
         </div>
       </form>

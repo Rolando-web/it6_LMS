@@ -58,3 +58,15 @@
     </div>
   </div>
 </div>
+
+<div id="errorModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white text-red-500 p-6 rounded-lg max-w-md text-center flex justify-center flex-col items-center">
+    <h3 class="text-xl font-bold mb-4">Error</h3>
+    <p id="errorMessage"></p>
+    <svg class="w-10 h-10 mt-0.5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+    <button onclick="document.getElementById('errorModal').classList.add('hidden')" class="mt-4 bg-red-600 text-white px-4 py-2 rounded">Close</button>
+  </div>
+</div>

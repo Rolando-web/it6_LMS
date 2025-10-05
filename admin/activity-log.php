@@ -1,7 +1,7 @@
 <?php
 session_start();
-require '../admin/BookController.php';
-require '../admin/transactionControll.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 require '../auth.php';
 
 $db = new Database();
@@ -69,7 +69,7 @@ $users = $library->getTransactions($limit, $offset);
           <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
             <i class="bi bi-list fs-4"></i>
           </button>
-          <h2 class="text-light mb-0 text-3xl">User Activity Log</h2>
+          <h2 class="text-light mb-0 text-3xl">User Activity logs</h2>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <!-- Right: Profile Info -->

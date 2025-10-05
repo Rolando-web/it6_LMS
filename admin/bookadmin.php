@@ -1,5 +1,6 @@
 <?php
-require_once 'BookController.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 require '../auth.php';
 session_start();
 
@@ -261,8 +262,8 @@ $books = $database->getFilteredBooks($category, $search);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($books)): ?>
-                                <?php foreach ($books as $book): ?>
+                            <?php if (!empty($bookss)): ?>
+                                <?php foreach ($bookss as $book): ?>
                                     <tr>
                                         <td>
                                             <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
