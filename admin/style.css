@@ -151,3 +151,14 @@ body {
 .sidebar-overlay.show {
   display: block;
 }
+
+.btn-green-600 {
+  background-color: #48bb78;
+  border-color: #48bb78;
+  color: white;
+}
+
+.btn-green-600:hover {
+  background-color: #38a169;
+  border-color: #38a169;
+}

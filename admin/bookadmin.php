@@ -1,11 +1,12 @@
 <?php
-require_once 'BookController.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 require '../auth.php';
 session_start();
 
 $database = new Database();
-$books = $database->getBooks();
 $auth = new auth($database);
+
 
 if (isset($_POST['logout'])) {
     $auth->logout();
@@ -14,10 +15,11 @@ if (isset($_POST['logout'])) {
 }
 
 // if wala kay account dika ka login
-if (!$auth->isLoggedIn()) {
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Admin') {
     header('Location: ../login.php');
     exit;
 }
+
 
 $message = '';
 if (isset($_SESSION['message'])) {
@@ -106,12 +108,13 @@ $offset = ($page - 1) * $limit;
 $totalBooks = $database->getTotalBooks();
 $totalPages = ceil($totalBooks / $limit);
 
-$books = $database->tableBooks($limit, $offset);
+$bookss = $database->tableBooks($limit, $offset);
 
+$search = $_GET['search'] ?? '';
+$category = $_GET['category'] ?? 'all';
+
+$books = $database->getFilteredBooks($category, $search);
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -122,64 +125,20 @@ $books = $database->tableBooks($limit, $offset);
     <title>Book Management System - Admin Control</title>
     <meta name="description" content="Admin dashboard for book management system with dark theme interface">
     <link rel="stylesheet" href="../admin/style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+<style>
+
+</style>
 
 <body>
     <div class="d-flex min-vh-100">
-        <!-- Mobile Overlay -->
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
         <!-- Sidebar -->
-        <div class="sidebar bg-dark text-light p-0" id="sidebar">
-            <div class="p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="mb-0 fw-bold text-light">
-                        ADMIN<span class="font-light">CONTROL</span>
-                    </h4>
-                    <button class="btn btn-sm d-md-none text-light" id="closeSidebar">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-
-                <nav class="nav flex-column">
-                    <a class="nav-link text-light py-3 px-3" href="#" style="font-size: 16px;">
-                        <i class="bi bi-speedometer2 me-2"></i>
-                        Dashboard
-                    </a>
-                    <a class="nav-link text-light py-3 px-3" href="#" style="font-size: 16px;">
-                        <i class="bi bi-collection me-2"></i>
-                        Category
-                    </a>
-                    <a class="nav-link text-light py-3 px-3 active" href="#" style="font-size: 16px;">
-                        <i class="bi bi-book me-2"></i>
-                        Books
-                    </a>
-                    <a class="nav-link text-light py-3 px-3" href="../admin/transaction.php" style="font-size: 16px;">
-                        <i class="bi bi-book me-2"></i>
-                        Transaction
-                    </a>
-                    <a class="nav-link text-light py-3 px-3" href="../admin/useradmin.php" style="font-size: 16px;">
-                        <i class="bi bi-people me-2"></i>
-                        Users
-                    </a>
-                </nav>
-            </div>
-            <form method="POST">
-                <div class="position-absolute bottom-0 w-100 p-4">
-                    <a href="../login.php" class="text-decoration-none">
-                        <button class="btn text-light d-flex align-items-center" name="logout" style="font-size: 16px;">
-                            <i class="bi bi-box-arrow-right me-2"></i>
-                            Log Out
-                        </button></a>
-                </div>
-            </form>
-        </div>
-
+        <?php if (file_exists('Frontend/sidebar.php')) include 'Frontend/sidebar.php'; ?>
+        <!-- Sidebar -->
         <!-- Main Content -->
         <div class="main-content flex-grow-1">
             <!-- Header -->
@@ -188,12 +147,10 @@ $books = $database->tableBooks($limit, $offset);
                     <button class="btn btn-sm text-light d-md-none me-3" id="openSidebar">
                         <i class="bi bi-list fs-4"></i>
                     </button>
-                    <h2 class="text-light mb-0">Book Management</h2>
+                    <h2 class="text-light mb-0 text-3xl">Book Management</h2>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
-                    <!-- Right: Profile Info -->
                     <div class="d-flex align-items-center">
-                        <!-- Desktop View -->
                         <div class="d-none d-sm-block text-end me-3">
                             <div class="text-light">
                                 <?php
@@ -207,7 +164,6 @@ $books = $database->tableBooks($limit, $offset);
                             </div>
                             <small class="text-white opacity-50">Admin</small>
                         </div>
-
                         <!-- Mobile Dropdown -->
                         <div class="dropdown d-sm-none">
                             <a
@@ -249,39 +205,61 @@ $books = $database->tableBooks($limit, $offset);
                 </div>
             </div>
 
-
-
             <!-- Controls -->
             <div class="p-4 w-100">
-                <div class="row mb-4">
-                    <div>
-                        <?php if ($message): ?>
-                            <div style="color: green; padding-bottom: 18px;"><?php echo htmlspecialchars($message); ?></div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-4 col-md-4 mb-3 mb-md-0">
-                        <button type="button" class="btn btn-info d-flex align-items-center w-20 w-md-auto justify-content-center"
-                            data-bs-toggle="modal" data-bs-target="#addBookModal">
-                            <i class="bi bi-plus-circle me-2"></i>
+                <div class="flex flex-col md:flex-row mb-4">
+
+                    <?php if ($message): ?>
+                        <!-- Success Modal -->
+                        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-green-100 border-green-300">
+                                        <h5 class="modal-title text-green-700" id="successModalLabel">Success</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-green-600">
+                                        <?php echo htmlspecialchars($message); ?>
+                                    </div>
+                                    <div class="modal-footer bg-green-100 border-green-300">
+                                        <button type="button" class="btn btn-green-600" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="w-full lg:w-[25%] mb-3 md:mb-0 md:px-2">
+                        <button
+                            type="button"
+                            class="bg-blue-500 text-white flex items-center justify-center w-full md:w-auto px-8 py-2 rounded hover:bg-blue-600"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addBookModal">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
                             Add Book
                         </button>
                     </div>
-                    <!-- input -->
-                    <div class="col-12 col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="bi bi-search"></i>
-                            </span>
+                    <div class="w-full md:w-25 lg:w-20">
+                        <form method="GET" action="<?= $_SERVER['PHP_SELF'] ?>" class="flex">
+                            <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
                             <input
                                 type="text"
-                                class="form-control"
-                                placeholder="Search by ID or Name" />
-                        </div>
+                                name="search"
+                                id="searchInput"
+                                value="<?= htmlspecialchars($search) ?>"
+                                placeholder="Search by Title, ID"
+                                class="flex-1 px-3 py-2 rounded-l border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-r hover:bg-blue-600">
+                                Search
+                            </button>
+                        </form>
                     </div>
                 </div>
 
                 <!-- Table -->
-                <div class="table-responsive">
+                <div class="table-responsive" style="border-radius: 10px;">
                     <table class="table table-dark table-hover">
                         <thead class="text-white font-bold">
                             <tr>
@@ -297,57 +275,61 @@ $books = $database->tableBooks($limit, $offset);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($books as $book): ?>
-                                <tr>
-                                    <td>
-                                        <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
-                                            alt="<?= htmlspecialchars($book['title']) ?>"
-                                            class="rounded"
-                                            width="80" height="80" />
-                                    </td>
-                                    <td class="align-middle"><?= $book['id'] ?></td>
-                                    <td class="align-middle">
-                                        <div>
-                                            <div class="fw-bold"><?= htmlspecialchars($book['title']) ?></div>
-                                            <small class="opacity-50"><?= htmlspecialchars($book['author']) ?></small>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle d-none d-sm-table-cell"><?= htmlspecialchars($book['author']) ?></td>
-                                    <td class="align-middle d-none d-sm-table-cell"><?= htmlspecialchars($book['category']) ?></td>
-                                    <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['isbn']) ?></td>
-                                    <td class="align-middle d-none d-md-table-cell"><?= htmlspecialchars($book['publish_date']) ?></td>
-                                    <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['copies']) ?></td>
-                                    <td class="align-middle">
-                                        <div class="d-flex gap-1">
-                                            <!-- Edit button -->
-                                            <button class="btn btn-sm btn-outline-warning editBtn"
-                                                data-id="<?= $book['id'] ?>"
-                                                data-title="<?= htmlspecialchars($book['title']) ?>"
-                                                data-author="<?= htmlspecialchars($book['author']) ?>"
-                                                data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
-                                                data-publish_date="<?= htmlspecialchars($book['publish_date']) ?>"
-                                                data-copies="<?= htmlspecialchars($book['copies']) ?>"
-                                                data-image="<?= $book['image'] ?>">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-
-                                            <!-- Delete -->
-                                            <form method="POST" style="display:inline;"
-                                                onsubmit="return confirm('Are you sure you want to delete this book?');">
-                                                <input type="hidden" name="delete_id" value="<?= $book['id'] ?>">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i class="bi bi-trash"></i>
+                            <?php if (!empty($bookss)): ?>
+                                <?php foreach ($bookss as $book): ?>
+                                    <tr>
+                                        <td>
+                                            <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
+                                                alt="<?= htmlspecialchars($book['title']) ?>"
+                                                class="rounded"
+                                                width="80" height="80" />
+                                        </td>
+                                        <td class="align-middle"><?= $book['id'] ?></td>
+                                        <td class="align-middle">
+                                            <div>
+                                                <div class="fw-bold"><?= htmlspecialchars($book['title']) ?></div>
+                                                <small class="opacity-50"><?= htmlspecialchars($book['author']) ?></small>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle d-none d-sm-table-cell"><?= htmlspecialchars($book['author']) ?></td>
+                                        <td class="align-middle d-none d-sm-table-cell"><?= htmlspecialchars($book['category']) ?></td>
+                                        <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['isbn']) ?></td>
+                                        <td class="align-middle d-none d-md-table-cell"><?= htmlspecialchars($book['publish_date']) ?></td>
+                                        <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['copies']) ?></td>
+                                        <td class="align-middle">
+                                            <div class="d-flex gap-1">
+                                                <!-- Edit button -->
+                                                <button class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg editBtn" title="Edit"
+                                                    data-id="<?= $book['id'] ?>"
+                                                    data-title="<?= htmlspecialchars($book['title']) ?>"
+                                                    data-author="<?= htmlspecialchars($book['author']) ?>"
+                                                    data-isbn="<?= htmlspecialchars($book['isbn']) ?>"
+                                                    data-publish_date="<?= htmlspecialchars($book['publish_date']) ?>"
+                                                    data-copies="<?= htmlspecialchars($book['copies']) ?>"
+                                                    data-image="<?= $book['image'] ?>">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
                                                 </button>
-                                            </form>
-
-                                            <!-- View -->
-                                            <button class="btn btn-sm btn-outline-info" title="View">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                        </div>
-                                    </td>
+                                                <!-- Delete -->
+                                                <form method="POST" style="display:inline;"
+                                                    onsubmit="return confirm('Are you sure you want to delete this book?');">
+                                                    <input type="hidden" name="delete_id" value="<?= $book['id'] ?>">
+                                                    <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg" title="Delete">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="9" class="px-6 py-4 text-center text-red-500">No books found.</td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -380,120 +362,30 @@ $books = $database->tableBooks($limit, $offset);
                     </nav>
                 </div>
 
+                <!-- Sidebar -->
+                <?php if (file_exists('Frontend/book-modal.php')) include 'Frontend/book-modal.php'; ?>
+                <!-- Sidebar -->
 
-                <!-- Modal -->
-                <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content" style="background-color: #101828; color:white;">
+            </div>
+            <!-- Bootstrap JS for mobile sidebar toggle -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="../admin//script.js"></script>
+            <script src="../admin//active.js"></script>
 
-                            <!-- Modal Header -->
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addBookModalLabel">Add New Book</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-
-                            <!-- Modal Body -->
-                            <div class="modal-body">
-                                <form method="POST" enctype="multipart/form-data" id="addBookForm">
-                                    <div class="mb-3">
-                                        <label for="title" class="form-label">Title</label>
-                                        <input type="text" class="form-control" id="title" name="title" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="author" class="form-label">Author</label>
-                                        <input type="text" class="form-control" id="author" name="author" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="category" class="form-label">Roles</label>
-                                        <select class="form-select" id="category" name="category" required>
-                                            <option value="Fiction">Fiction</option>
-                                            <option value="Science & Technology">Science & Technology</option>
-                                            <option value="History & Biography">History & Biography</option>
-                                            <option value="Business & Economics">Business & Economics</option>
-                                            <option value="Philosophy & Psychology">Philosophy & Psychology</option>
-                                            <option value="Arts & Literature">Arts & Literature</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="isbn" class="form-label">ISBN</label>
-                                        <input type="text" class="form-control" id="isbn" name="isbn" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="publish_date" class="form-label">Publish Date</label>
-                                        <input type="date" class="form-control" id="publish_date" name="publish_date" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="copies" class="form-label">Copies</label>
-                                        <input type="number" class="form-control" id="copies" name="copies" min="1" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="image" class="form-label">Book Image</label>
-                                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- Modal Footer -->
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" form="addBookForm" name="addBook" class="btn btn-primary">Save Book</button>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Edit Modal -->
-                <div class="modal fade" id="editBookModal" tabindex="-1">
-                    <div class="modal-dialog">
-                        <form method="POST" enctype="multipart/form-data" class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit Book</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" id="edit_id" name="edit_id">
-                                <input type="hidden" id="edit_current_image" name="edit_current_image">
-
-                                <input type="text" id="edit_title" name="edit_title" class="form-control mb-2" required>
-                                <input type="text" id="edit_author" name="edit_author" class="form-control mb-2" required>
-                                <div class="mb-3">
-                                    <label for="category" class="form-label">Category</label>
-                                    <select class="form-select" id="edit_category" name="edit_category" required>
-                                        <option value="Fiction">Fiction</option>
-                                        <option value="Science & Technology">Science & Technology</option>
-                                        <option value="History & Biography">History & Biography</option>
-                                        <option value="Business & Economics">Business & Economics</option>
-                                        <option value="Philosophy & Psychology">Philosophy & Psychology</option>
-                                        <option value="Arts & Literature">Arts & Literature</option>
-                                    </select>
-                                </div>
-                                <input type="text" id="edit_isbn" name="edit_isbn" class="form-control mb-2" required>
-                                <input type="date" id="edit_publish_date" name="edit_publish_date" class="form-control mb-2" required>
-                                <input type="number" id="edit_copies" name="edit_copies" class="form-control mb-2" required>
-
-                                <!-- 📌 Image Preview -->
-                                <div class="mb-2">
-                                    <img id="edit_preview" src=""
-                                        alt="Book Image"
-                                        class="img-fluid rounded mb-2"
-                                        style="max-height: 150px;">
-                                </div>
-
-                                <input type="file" id="edit_image" name="edit_image" class="form-control mb-2">
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" name="updateBook" class="btn btn-success">Update Book</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <script>
+                // Book added success modal
+                document.addEventListener("DOMContentLoaded", function() {
+                    const modal = new bootstrap.Modal(document.getElementById("successModal"), {
+                        keyboard: false,
+                    });
+                    modal.show();
+                    setTimeout(() => {
+                        modal.hide();
+                    }, 3000);
+                });
+            </script>
 
 
-                <!-- Bootstrap JS for mobile sidebar toggle -->
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-                <script src="../admin/script.js"></script>
 </body>
 
 </html>

@@ -1,8 +1,8 @@
 <?php
 session_start();
 require '../auth.php';
-require '../admin/BookController.php';
-require '../admin/transactionControll.php';
+require '../admin/backend/BookController.php';
+require '../admin/backend/transactionControll.php';
 
 
 $database = new Database();
@@ -11,7 +11,13 @@ $library = new Library($database->pdo);
 
 $auth = new auth($database);
 
-if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
+if (isset($_POST['logout'])) {
+  $auth->logout();
+  header('Location: ../login.php');
+  exit;
+}
+
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Users') {
   header('Location: ../login.php');
   exit;
 }
@@ -34,6 +40,13 @@ if (isset($_POST['borrow'])) {
   exit;
 }
 
+// Handle Category
+$category = $_GET['category'] ?? 'all';
+$search = $_GET['search'] ?? '';
+$sort = $_GET['sort'] ?? 'title';
+$categories = ['all', 'fiction', 'technology', 'history', 'business', 'philosophy', 'arts', 'science', 'biology'];
+
+$filter = $library->getFilteredBooks($category, $search, $sort);
 
 
 
@@ -60,189 +73,17 @@ if (isset($_POST['borrow'])) {
     }
   </script>
 </head>
+<style>
+  .filter-btn.active {
+    background-color: white !important;
+    color: black !important;
+  }
+</style>
 
 <body class="bg-gray-900 text-white font-sans">
+  <!-- Visit Header.php -->
+  <?php if (file_exists('Frontend/header.php')) include 'Frontend/header.php'; ?>
   <!-- Header -->
-  <header class="relative z-10 px-4 py-4">
-    <nav class="flex items-center md:justify-between mx-auto">
-      <!-- Logo -->
-      <div class="text-xl font-bold flex-1 lg:text-center">
-        <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
-      </div>
-
-      <!-- Mobile Menu Button -->
-      <button id="mobileMenuBtn" class="md:hidden text-white hover:text-gray-300 transition-colors mx-2">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-      </button>
-
-      <!-- Navigation Links -->
-      <div class="hidden md:flex items-start space-x-4 sm:flex-1 justify-center">
-        <a href="../user-interface/user-home.php" class="flex items-center space-x-1 text-white hover:text-gray-300 transition-colors">
-          <div class="w-4 h-4 border border-white"></div>
-          <span>Home</span>
-        </a>
-        <a href="#" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 grid grid-cols-2 gap-px">
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-            <div class="bg-gray-300 w-full h-full"></div>
-          </div>
-          <span>Category</span>
-        </a>
-        <a href="./user-borrow.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <div class="w-4 h-4 border border-gray-300 relative">
-            <div class="absolute inset-1 bg-gray-300"></div>
-          </div>
-          <span>Books</span>
-        </a>
-        <a href="./user-transaction.php" class="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>Transaction</span>
-        </a>
-      </div>
-
-      <div class="hidden md:flex items-center flex-1 md:justify-end lg:justify-center">
-        <!-- Profile with Dropdown -->
-        <div class="relative flex items-center space-x-2 md:space-x-2">
-          <div class="text-right">
-            <div class="text-sm font-medium hidden lg:block">
-              <?php
-              $user = $auth->user();
-              if ($user && isset($user['first_name'], $user['last_name'])) {
-                echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
-              } else {
-                echo 'Guest';
-              }
-              ?>
-            </div>
-
-            <div class="text-xs text-gray-400 hidden lg:block">Member</div>
-          </div>
-          <div class="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center ">
-            <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
-          </div>
-
-          <!-- Dropdown Toggle -->
-          <button id="dropdownButton" class="ml-2 p-1 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-
-          <!-- Dropdown Menu -->
-          <div id="dropdownMenu" class="absolute w-20 lg:w-40 rounded-lg shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 hidden" style="margin-top: 90px;">
-            <div role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
-              <!-- Logout Link -->
-              <form method="POST">
-                <button type="submit" name="logout" class="text-start block px-4 w-20 lg:w-40 py-2 rounded-lg text-sm text-white hover:bg-gray-700">
-                  Logout
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Mobile Profile (visible on mobile) -->
-      <div class="md:hidden flex items-center">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
-          <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
-        </div>
-      </div>
-    </nav>
-
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-      <div class="fixed top-0 right-0 h-full w-80 bg-gray-900 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out" id="mobileMenuPanel">
-        <!-- Mobile Menu Header -->
-        <div class="flex items-center justify-between p-6 border-b border-gray-800">
-          <div class="text-lg font-bold">
-            <span class="text-white">HOME</span><span class="text-gray-300">LIBRARY</span>
-          </div>
-          <button id="closeMobileMenu" class="text-white hover:text-gray-300 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Mobile Menu Content -->
-        <div class="p-6">
-          <!-- Profile Section -->
-          <div class="flex items-center space-x-3 mb-4 pb-6 border-b border-gray-800">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
-              <img src="../image/willan.jpg" alt="profile" class="w-full h-full object-cover rounded-full">
-            </div>
-            <div>
-              <div class="text-white font-medium">
-                <?php
-                $user = $auth->user();
-                if ($user && isset($user['first_name'], $user['last_name'])) {
-                  echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']);
-                } else {
-                  echo 'Guest';
-                }
-                ?></div>
-              <div class="text-gray-400 text-sm">Member</div>
-            </div>
-          </div>
-          <div class="p-4">
-            <a href="../login.php" class="text-decoration-none">
-              <button class="btn text-light d-flex align-items-center" style="font-size: 16px;">
-                <i class="bi bi-box-arrow-right me-2"></i>
-                Log Out
-              </button></a>
-          </div>
-
-          <!-- Search -->
-          <div class="mb-6">
-            <div class="relative">
-              <input type="text" placeholder="Search title, Author, Isbn" class="w-full bg-gray-800 bg-opacity-50 text-white placeholder-gray-400 px-4 py-3 pr-10 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none">
-              <svg class="absolute right-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Navigation Links -->
-          <nav class="space-y-">
-            <a href="../user-interface/user-home.php" class="flex items-center space-x-3 text-white hover:text-gray-300 transition-colors py-3">
-              <div class="w-5 h-5 border border-white"></div>
-              <span class="text-lg">Home</span>
-            </a>
-            <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <div class="w-5 h-5 grid grid-cols-2 gap-px">
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-                <div class="bg-gray-300 w-full h-full"></div>
-              </div>
-              <span class="text-lg">Category</span>
-            </a>
-            <a href="./user-borrow.php" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <div class="w-5 h-5 border border-gray-300 relative">
-                <div class="absolute inset-1 bg-gray-300"></div>
-              </div>
-              <span class="text-lg">Books</span>
-            </a>
-            <a href="#" class="flex items-center space-x-3 text-gray-300 hover:text-white transition-colors py-3">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span class="text-lg">Transaction</span>
-            </a>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </header>
-
 
   <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-6 py-8">
@@ -254,84 +95,83 @@ if (isset($_POST['borrow'])) {
 
     <!-- Filters and Controls -->
     <div class="bg-gray-800 rounded-xl p-6 mb-8">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-        <!-- Category Filter -->
-        <div class="flex flex-wrap gap-2">
-          <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-white text-gray-900" data-category="all">
-            All Books
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="fiction">
-            Fiction
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="science">
-            Science & Technology
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="history">
-            History & Biography
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="business">
-            Business & Economics
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="philosophy">
-            Philosophy & Psychology
-          </button>
-          <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600" data-category="arts">
-            Arts & Literature
-          </button>
-        </div>
+      <form id="filterForm" method="GET" action="<?= $_SERVER['PHP_SELF'] ?>">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+          <div class="flex flex-wrap gap-2">
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 <?= $category === 'all' ? 'active' : '' ?>" data-category="all" onclick="submitForm('all')">
+              All Books
+            </button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'fiction' ? 'active' : '' ?>" data-category="fiction" onclick="submitForm('fiction')">Fiction</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'technology' ? 'active' : '' ?>" data-category="technology" onclick="submitForm('technology')">Technology</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'history' ? 'active' : '' ?>" data-category="history" onclick="submitForm('history')">History</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'business' ? 'active' : '' ?>" data-category="business" onclick="submitForm('business')">Business</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'philosophy' ? 'active' : '' ?>" data-category="philosophy" onclick="submitForm('philosophy')">Philosophy</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'arts' ? 'active' : '' ?>" data-category="arts" onclick="submitForm('arts')">Arts</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'science' ? 'active' : '' ?>" data-category="science" onclick="submitForm('science')">Science</button>
+            <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 hover:bg-gray-600 <?= $category === 'biology' ? 'active' : '' ?>" data-category="biology" onclick="submitForm('biology')">Biology</button>
+          </div>
 
-        <!-- Sort Options -->
-        <div class="flex items-center space-x-4">
-          <label class="text-gray-400 text-sm">Sort by:</label>
-          <select id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
-            <option value="title">Title A-Z</option>
-            <option value="author">Author A-Z</option>
-            <option value="year">Publication Year</option>
-            <option value="rating">Rating</option>
-          </select>
+          <div>
+            <input type="text" name="search" id="searchInput" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" placeholder="Search by Title ..." class="bg-gray-700 text-white mx-4 px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
+          </div>
+          <input type="hidden" name="category" id="categoryInput" value="<?= htmlspecialchars($_GET['category'] ?? 'all') ?>">
+          <div class="flex items-center space-x-4">
+            <label class="text-gray-400 text-sm">Sort by:</label>
+            <select name="sort" id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none"
+              onchange="submitForm()">
+              <option value="title" <?= $_GET['sort'] ?? 'title' === 'title' ? 'selected' : '' ?>>Title A-Z</option>
+              <option value="author" <?= $_GET['sort'] ?? 'title' === 'author' ? 'selected' : '' ?>>Author A-Z</option>
+              <option value="year" <?= $_GET['sort'] ?? 'title' === 'publish_year' ? 'selected' : '' ?>>Publication Year</option>
+            </select>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
 
     <!-- Books Grid -->
     <div id="booksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-      <!-- PHP PHP PHP PHP LOOP -->
-      <?php foreach ($books as $book): ?>
+
+      <?php foreach ($filter as $book): ?>
         <div class="bg-gray-800 rounded-xl p-2 hover:bg-gray-750 transition-colors group">
-          <div class="swiper-slide">
-            <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
-              <div class="mb-4">
-                <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-                  <img src="../admin/<?= $book['image'] ?: 'uploads/default.jpg' ?>"
-                    alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
-                </div>
+          <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group <?= ($book['copies'] == 0 ? 'opacity-50' : '') ?>">
+            <div class="mb-4">
+              <div class="w-full h-48 bg-gradient-to-br from-slate-600 to-slate-800 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+                <img src="../admin/<?= $book['image'] ?: 'uploads/default.jpg' ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="w-full h-full object-cover rounded-lg">
               </div>
-              <div class="space-y-2">
-                <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
-                <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
-                <div class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1"> <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg> <span class="text-yellow-400 text-sm font-medium">4.8</span> </div> <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
+            </div>
+
+            <div class="space-y-2">
+              <h3 class="text-white font-medium text-lg leading-tight"><?= htmlspecialchars($book['title']) ?></h3>
+              <p class="text-gray-400 text-sm"><?= htmlspecialchars($book['author']) ?></p>
+              <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-1">
+                  <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span class="text-yellow-400 text-sm font-medium">4.8</span>
                 </div>
-                <form method="POST">
-                  <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
-                  <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
-
-                  <button type="button"
-                    class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors mt-4"
-                    data-book-id="<?= $book['id'] ?>"
-                    data-book-title="<?= htmlspecialchars($book['title']) ?>"
-                    data-book-author="<?= htmlspecialchars($book['author']) ?>">
-                    Borrow Book
-                  </button>
-                </form>
-
+                <span class="text-gray-500 text-sm"><?= htmlspecialchars($book['publish_date']) ?></span>
               </div>
             </div>
           </div>
+
+          <?php if ($book['copies'] > 0): ?>
+            <form method="POST">
+              <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">
+              <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
+              <button type="button" class="openBorrowModal w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors mb-4" data-book-id="<?= $book['id'] ?>" data-book-title="<?= htmlspecialchars($book['title']) ?>" data-book-author="<?= htmlspecialchars($book['author']) ?>">
+                Borrow Book
+              </button>
+            </form>
+          <?php else: ?>
+            <button type="button" class="w-full bg-white hover:bg-gray-300 text-black py-2 px-3 rounded-lg text-sm font-medium transition-colors mb-4"
+              onclick="submitForm('<?= strtolower(htmlspecialchars($book['category'])) ?>')">
+              Find Similar
+            </button>
+          <?php endif; ?>
         </div>
       <?php endforeach; ?>
+
     </div>
 
     <!-- Load More Button -->
@@ -345,106 +185,39 @@ if (isset($_POST['borrow'])) {
     </div>
   </main>
 
-  <!-- Borrow Modal -->
-  <div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
-      <div class="text-center mb-6">
-        <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl font-semibold text-white mb-2">Borrow Book</h3>
-        <p class="text-gray-400 mb-4">You're about to borrow:</p>
-        <p id="borrowBookTitle" class="text-white font-medium text-lg mb-2"></p>
-        <p id="borrowBookAuthor" class="text-gray-400 mb-6"></p>
-      </div>
+  <!-- MODAL -->
+  <?php if (file_exists('Frontend/borrow-modal.php')) include 'Frontend/borrow-modal.php'; ?>
+  <!-- MODAL -->'
 
-      <div class="space-y-4 mb-6">
-        <div>
-          <label class="block text-gray-400 text-sm mb-2">Borrow Duration</label>
-          <select id="borrowDuration" class="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none">
-            <option value="7">7 days</option>
-            <option value="14" selected>14 days</option>
-            <option value="21">21 days</option>
-            <option value="30">30 days</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-gray-400 text-sm mb-2">Return Date</label>
-          <input type="date" id="returnDate" class="w-full bg-gray-700 text-white px-3 py-2 rounded-lg border border-gray-600 focus:border-gray-400 focus:outline-none" readonly>
-        </div>
-      </div>
 
-      <div class="flex space-x-4">
-        <button id="cancelBorrow" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg font-medium transition-colors">
-          Cancel
-        </button>
-        <button id="confirmBorrow" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
-          Confirm Borrow
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Success Modal -->
-  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-5">
-    <div class="bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4">
-      <div class="text-center">
-        <div class="w-16 h-16 bg-green-600 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-        </div>
-        <h3 class="text-xl font-semibold text-white mb-2">Book Borrowed Successfully!</h3>
-        <p class="text-gray-400 mb-6">You can find your borrowed books in your account dashboard.</p>
-        <button onclick="" id="closeSuccess" class="bg-white text-gray-900 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
   <script src="../user-interface/user.js"></script>
+  <script src="../user-interface/borrow.js"></script>
+
   <script>
-    document.querySelectorAll(".openBorrowModal").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const bookId = btn.dataset.bookId;
-        const title = btn.dataset.bookTitle;
-        const author = btn.dataset.bookAuthor;
+    // For Filter
+    function submitForm(category = null) {
+      const form = document.getElementById("filterForm");
+      const categoryInput = document.getElementById("categoryInput");
+      const buttons = document.querySelectorAll(".filter-btn");
 
-        document.getElementById("borrowBookTitle").textContent = title;
-        document.getElementById("borrowBookAuthor").textContent = author;
-
-        // store bookId in confirm button
-        document.getElementById("confirmBorrow").dataset.bookId = bookId;
-
-        document.getElementById("borrowModal").classList.remove("hidden");
-
-        // Close Success Modal
-        if (closeSuccess) {
-          closeSuccess.addEventListener("click", () => {
-            successModal.classList.add("hidden");
-          });
-        }
-        // Extra: close modal if you click outside of it
-        [borrowModal, successModal].forEach((modal) => {
-          if (modal) {
-            modal.addEventListener("click", (e) => {
-              if (e.target === modal) {
-                modal.classList.add("hidden");
-              }
-            });
-          }
+      if (category) {
+        categoryInput.value = category;
+        buttons.forEach((btn) => {
+          btn.classList.remove("active");
+          console.log(`Removed active from ${btn.dataset.category}`); // Debug
         });
 
-        // Cancel Borrow → Close Borrow Modal
-        if (cancelBorrow) {
-          cancelBorrow.addEventListener("click", () => {
-            borrowModal.classList.add("hidden");
-          });
+        const activeBtn = document.querySelector(`.filter-btn[data-category="${category}"]`);
+        if (activeBtn) {
+          activeBtn.classList.add("active");
+          console.log(`Added active to ${category}`); // Debug
+        } else {
+          console.error(`No button found for category: ${category}`); // Debug
         }
-      });
-    });
+      }
+
+      form.submit();
+    }
 
 
     // handle duration → returnDate
@@ -452,25 +225,23 @@ if (isset($_POST['borrow'])) {
       const bookId = document.getElementById("confirmBorrow").dataset.bookId;
       const userId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
       const duration = document.getElementById("borrowDuration").value;
-      const returnDate = document.getElementById("returnDate").value;
 
       fetch("", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
           },
-          body: `borrow=1&book_id=${bookId}&user_id=${userId}&duration=${duration}&return_date=${returnDate}`
+          body: `borrow=1&book_id=${bookId}&user_id=${userId}&duration=${duration}`
         })
         .then(res => res.json())
         .then(data => {
-          // Hide borrow modal
           document.getElementById("borrowModal").classList.add("hidden");
 
-          // Show success modal
-          document.getElementById("successModal").classList.remove("hidden");
-
-          // Optionally insert message
-          if (data.message) {
+          if (data.message.includes("already borrow")) {
+            document.getElementById("errorModal").classList.remove("hidden");
+            document.querySelector("#errorModal h3").textContent = data.message;
+          } else {
+            document.getElementById("successModal").classList.remove("hidden");
             document.querySelector("#successModal h3").textContent = data.message;
           }
         })
