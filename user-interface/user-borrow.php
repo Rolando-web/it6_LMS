@@ -17,6 +17,12 @@ if (isset($_POST['logout'])) {
   exit;
 }
 
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Users') {
+  header('Location: ../login.php');
+  exit;
+}
+
+
 // Handle borrow request
 if (isset($_POST['borrow'])) {
   $user_id = $_POST['user_id'];
@@ -91,7 +97,6 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
     <div class="bg-gray-800 rounded-xl p-6 mb-8">
       <form id="filterForm" method="GET" action="<?= $_SERVER['PHP_SELF'] ?>">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-          <!-- Category Filter -->
           <div class="flex flex-wrap gap-2">
             <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-700 text-gray-300 <?= $category === 'all' ? 'active' : '' ?>" data-category="all" onclick="submitForm('all')">
               All Books
@@ -110,7 +115,6 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
             <input type="text" name="search" id="searchInput" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" placeholder="Search by Title ..." class="bg-gray-700 text-white mx-4 px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none">
           </div>
           <input type="hidden" name="category" id="categoryInput" value="<?= htmlspecialchars($_GET['category'] ?? 'all') ?>">
-          <!-- Sort Options -->
           <div class="flex items-center space-x-4">
             <label class="text-gray-400 text-sm">Sort by:</label>
             <select name="sort" id="sortSelect" class="bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-gray-400 focus:outline-none"
@@ -151,7 +155,6 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
             </div>
           </div>
 
-          <!-- Button outside the opacity div so it stays clickable -->
           <?php if ($book['copies'] > 0): ?>
             <form method="POST">
               <input type="hidden" name="user_id" value="<?= isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : '' ?>">

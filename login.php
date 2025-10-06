@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./src/input.css" />
   <link rel="stylesheet" href="./src/output.css" />
-  <title>Document</title>
+  <link rel="icon" href="./image/willan.jpg" type="image/jpeg">
+  <title>Login</title>
 </head>
 
 <body>

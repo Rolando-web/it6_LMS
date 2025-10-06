@@ -22,6 +22,12 @@ if (isset($_POST['logout'])) {
   exit;
 }
 
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Users') {
+  header('Location: ../login.php');
+  exit;
+}
+
+
 
 $user_id = $auth->getUserId();
 $activeBorrowings = $library->getActiveBorrowingsWithUser($user_id);

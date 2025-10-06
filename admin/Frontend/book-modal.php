@@ -29,6 +29,8 @@
                               <option value="Business">Business</option>
                               <option value="Philosophy">Philosophy</option>
                               <option value="Arts">Arts</option>
+                              <option value="Science">Science</option>
+                              <option value="Biology">Biology</option>
                             </select>
                           </div>
                           <div class="mb-3">

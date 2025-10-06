@@ -15,10 +15,11 @@ if (isset($_POST['logout'])) {
 }
 
 // if wala kay account dika ka login
-if (!$auth->isLoggedIn()) {
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Admin') {
     header('Location: ../login.php');
     exit;
 }
+
 
 $message = '';
 if (isset($_SESSION['message'])) {
@@ -126,19 +127,18 @@ $books = $database->getFilteredBooks($category, $search);
     <link rel="stylesheet" href="../admin/style.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+<style>
+
+</style>
 
 <body>
     <div class="d-flex min-vh-100">
-
         <!-- Sidebar -->
         <?php if (file_exists('Frontend/sidebar.php')) include 'Frontend/sidebar.php'; ?>
         <!-- Sidebar -->
-
         <!-- Main Content -->
         <div class="main-content flex-grow-1">
             <!-- Header -->
@@ -150,9 +150,7 @@ $books = $database->getFilteredBooks($category, $search);
                     <h2 class="text-light mb-0 text-3xl">Book Management</h2>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
-                    <!-- Right: Profile Info -->
                     <div class="d-flex align-items-center">
-                        <!-- Desktop View -->
                         <div class="d-none d-sm-block text-end me-3">
                             <div class="text-light">
                                 <?php
@@ -166,7 +164,6 @@ $books = $database->getFilteredBooks($category, $search);
                             </div>
                             <small class="text-white opacity-50">Admin</small>
                         </div>
-
                         <!-- Mobile Dropdown -->
                         <div class="dropdown d-sm-none">
                             <a
@@ -211,11 +208,27 @@ $books = $database->getFilteredBooks($category, $search);
             <!-- Controls -->
             <div class="p-4 w-100">
                 <div class="flex flex-col md:flex-row mb-4">
-                    <div>
-                        <?php if ($message): ?>
-                            <div class="text-green-600 mb-4"><?php echo htmlspecialchars($message); ?></div>
-                        <?php endif; ?>
-                    </div>
+
+                    <?php if ($message): ?>
+                        <!-- Success Modal -->
+                        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-green-100 border-green-300">
+                                        <h5 class="modal-title text-green-700" id="successModalLabel">Success</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-green-600">
+                                        <?php echo htmlspecialchars($message); ?>
+                                    </div>
+                                    <div class="modal-footer bg-green-100 border-green-300">
+                                        <button type="button" class="btn btn-green-600" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="w-full lg:w-[25%] mb-3 md:mb-0 md:px-2">
                         <button
                             type="button"
@@ -358,6 +371,19 @@ $books = $database->getFilteredBooks($category, $search);
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="../admin//script.js"></script>
             <script src="../admin//active.js"></script>
+
+            <script>
+                // Book added success modal
+                document.addEventListener("DOMContentLoaded", function() {
+                    const modal = new bootstrap.Modal(document.getElementById("successModal"), {
+                        keyboard: false,
+                    });
+                    modal.show();
+                    setTimeout(() => {
+                        modal.hide();
+                    }, 3000);
+                });
+            </script>
 
 
 </body>

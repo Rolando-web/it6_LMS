@@ -15,11 +15,11 @@ $totalbooks = $database->getTotalBooks();
 $totalusers = $auth->getTotalusers();
 $totaladmin = $auth->getTotaladmin();
 
-if (isset($_POST['logout'])) {
-  $auth->logout();
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Users') {
   header('Location: ../login.php');
   exit;
 }
+
 
 
 if (!$auth->isLoggedIn()) {
@@ -151,6 +151,7 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
     </div>
   </div>
 
+
   <!-- PARA DI GUBOT -->
   <!-- Books Collection -->
   <?php if (file_exists('Frontend/Bcollection.php')) include 'Frontend/Bcollection.php'; ?>
@@ -162,6 +163,7 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
   <?php if (file_exists('Frontend/footer.php')) include 'Frontend/footer.php'; ?>
   <!-- PARA DI GUBOT -->
   <!-- Scripts -->
+
 
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="../user-interface//user.js"></script>
@@ -179,11 +181,8 @@ $filter = $library->getFilteredBooks($category, $search, $sort);
 
         document.getElementById("borrowModal").classList.remove("hidden");
 
-        //  Set initial return date
         updateReturnDate();
 
-
-        // Update return date when duration changes
         document.getElementById("borrowDuration").addEventListener("change", () => {
           updateReturnDate();
         });

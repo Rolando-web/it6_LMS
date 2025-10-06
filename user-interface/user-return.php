@@ -17,6 +17,12 @@ if (isset($_POST['logout'])) {
   exit;
 }
 
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Users') {
+  header('Location: ../login.php');
+  exit;
+}
+
+
 
 if (isset($_POST['return_book'])) {
   $transaction_id = $_POST['transaction_id'];

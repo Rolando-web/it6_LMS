@@ -30,7 +30,8 @@ if (isset($_POST['logout'])) {
   header('Location: ../login.php');
   exit;
 }
-if (!$auth->isLoggedIn()) {
+
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Admin') {
   header('Location: ../login.php');
   exit;
 }
@@ -68,7 +69,7 @@ if (isset($_POST['updateBook'])) {
 
 
 // Pagination
-$limit = 3; // rows per page
+$limit = 5; // rows per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 
@@ -76,6 +77,7 @@ $offset = ($page - 1) * $limit;
 
 $totalBooks = $database->getTotalBooks();
 $targetbooks = 100;
+
 $percentagebooks = ($totalBooks / $targetbooks) * 100;
 $totalPages = ceil($totalBooks / $limit);
 
@@ -185,9 +187,10 @@ $recentBooks = $database->getRecentlyAddedBooks();
       <main class="flex-1 overflow-y-auto">
         <!-- Dashboard Content -->
         <div class="px-8 py-6">
+
           <!-- Stats Cards -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="stat-card bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="stat-card bg-[#404040] rounded-xl shadow-sm p-6">
               <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,11 +199,11 @@ $recentBooks = $database->getRecentlyAddedBooks();
                 </div>
                 <span class="badge px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full"><?php echo number_format($percentagebooks, 2) . "%"; ?></span>
               </div>
-              <p class="text-2xl font-bold text-gray-800 mb-1"><?php echo $totalBooks ?></p>
+              <p class="text-2xl font-bold text-white mb-1"><?php echo $totalBooks ?></p>
               <p class="text-sm text-gray-500 font-medium">Total Books</p>
             </div>
 
-            <div class="stat-card bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="stat-card bg-[#404040] rounded-xl shadow-sm  p-6">
               <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,11 +212,11 @@ $recentBooks = $database->getRecentlyAddedBooks();
                 </div>
                 <span class="badge px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full"><?php echo number_format($percentageCategories, 2) . "%"; ?></span>
               </div>
-              <p class="text-2xl font-bold text-gray-800 mb-1"><?php echo $totalunique ?></p>
+              <p class="text-2xl font-bold text-white mb-1"><?php echo $totalunique ?></p>
               <p class="text-sm text-gray-500 font-medium">Categories</p>
             </div>
 
-            <div class="stat-card bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="stat-card bg-[#404040] rounded-xl shadow-sm  p-6">
               <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                   <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,11 +225,11 @@ $recentBooks = $database->getRecentlyAddedBooks();
                 </div>
                 <span class="badge px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full"><?php echo number_format($percentageUsers, 2) . "%"; ?></span>
               </div>
-              <p class="text-2xl font-bold text-gray-800 mb-1"><?php echo $totalusers ?></p>
+              <p class="text-2xl font-bold text-white mb-1"><?php echo $totalusers ?></p>
               <p class="text-sm text-gray-500 font-medium">Active Users</p>
             </div>
 
-            <div class="stat-card bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="stat-card bg-[#404040] rounded-xl shadow-sm p-6">
               <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
                   <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,36 +238,36 @@ $recentBooks = $database->getRecentlyAddedBooks();
                 </div>
                 <span class="badge px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full"><?php echo number_format($percentagelogs, 2) . "%"; ?></span>
               </div>
-              <p class="text-2xl font-bold text-gray-800 mb-1"><?php echo $totallogs ?></p>
+              <p class="text-2xl font-bold text-white mb-1"><?php echo $totallogs ?></p>
               <p class="text-sm text-gray-500 font-medium">Daily log Activities</p>
             </div>
           </div>
 
           <!-- Books Table -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-200">
+          <div class="bg-[#404040] rounded-xl shadow-sm ">
+            <div class="px-6 py-4 border-b border-gray-200 border-opacity-50">
               <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-800">Recently Books Added</h3>
+                <h3 class="text-lg font-semibold text-white">Recently Books Added</h3>
 
               </div>
             </div>
 
             <div class="overflow-x-auto">
               <table class="w-full">
-                <thead class="bg-gray-50 border-b border-gray-200">
+                <thead class="bg-[#404040] border-b border-gray-200 border-opacity-20 text-white">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Book</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Author</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Copies</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Creted At</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Book</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Category</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Author</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Copies</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Creted At</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody class="divide-y divide-gray-200 divide-opacity-20">
                   <?php foreach ($books as $book): ?>
-                    <tr class="table-row">
-                      <td class="px-6 py-4">
+                    <tr class="table-row hover:bg-gray-700">
+                      <td class="px-6 py-3">
                         <div class="flex items-center space-x-3">
                           <div class="w-12 h-16  rounded flex-shrink-0 flex items-center justify-center text-white text-xs font-bold">
                             <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
@@ -273,17 +276,17 @@ $recentBooks = $database->getRecentlyAddedBooks();
                               width="80" height="80" />
                           </div>
                           <div>
-                            <p class="text-sm font-semibold text-gray-800"><?= htmlspecialchars($book['title']) ?></p>
-                            <p class="text-xs text-gray-500"><?= htmlspecialchars($book['isbn']) ?></p>
+                            <p class="text-sm font-semibold text-white"><?= htmlspecialchars($book['title']) ?></p>
+                            <p class="text-xs text-white opacity-30"><?= htmlspecialchars($book['isbn']) ?></p>
                           </div>
                         </div>
                       </td>
                       <td class="px-6 py-4">
                         <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full"><?= htmlspecialchars($book['category']) ?></span>
                       </td>
-                      <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($book['author']) ?></td>
-                      <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($book['copies']) ?></td>
-                      <td class="px-6 py-4 text-sm text-gray-700"><?= htmlspecialchars($book['created_at']) ?></td>
+                      <td class="px-6 py-4 text-sm text-white"><?= htmlspecialchars($book['author']) ?></td>
+                      <td class="px-6 py-4 text-sm text-white"><?= htmlspecialchars($book['copies']) ?></td>
+                      <td class="px-6 py-4 text-sm text-white"><?= htmlspecialchars($book['created_at']) ?></td>
                       <td class="px-6 py-4">
                         <div class="flex items-center space-x-2">
                           <button class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg editBtn" title="Edit"
@@ -316,14 +319,12 @@ $recentBooks = $database->getRecentlyAddedBooks();
                       &laquo;
                     </a>
                   </li>
-
                   <!-- Page Numbers -->
                   <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                     <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
                       <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                     </li>
                   <?php endfor; ?>
-
                   <!-- Next Button -->
                   <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
                     <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
@@ -333,6 +334,7 @@ $recentBooks = $database->getRecentlyAddedBooks();
                 </ul>
               </nav>
             </div>
+
           </div>
         </div>
       </main>

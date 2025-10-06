@@ -13,7 +13,8 @@ if (isset($_POST['logout'])) {
   header('Location: ../login.php');
   exit;
 }
-if (!$auth->isLoggedIn()) {
+
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Admin') {
   header('Location: ../login.php');
   exit;
 }
@@ -217,10 +218,10 @@ $users = $library->getTransactions($limit, $offset);
           </div>
         </div>
 
-        <!-- Fiction Card -->
+        <!-- biology Card -->
         <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
           <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/fiction.jpg" alt="Fiction category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <img src="../image/category/biology.jpg" alt="biology category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
           </div>
           <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
@@ -229,10 +230,10 @@ $users = $library->getTransactions($limit, $offset);
           </div>
         </div>
 
-        <!-- Fiction Card -->
+        <!-- science Card -->
         <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
           <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/fiction.jpg" alt="Fiction category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <img src="../image/category/science.jpg" alt="science category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
           </div>
           <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">

@@ -34,9 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./image/willan.jpg" type="image/jpeg">
   <link rel="stylesheet" href="./src/input.css" />
   <link rel="stylesheet" href="./src/output.css" />
-  <title>Document</title>
+  <title>Register</title>
 </head>
 
 <body>

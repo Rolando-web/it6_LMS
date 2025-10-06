@@ -15,7 +15,7 @@ if (isset($_POST['logout'])) {
   exit;
 }
 
-if (!$auth->isLoggedIn()) {
+if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Admin') {
   header('Location: ../login.php');
   exit;
 }
