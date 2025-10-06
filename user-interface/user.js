@@ -12,7 +12,7 @@ document.addEventListener("click", (e) => {
     dropdownMenu.classList.add("hidden");
   }
 });
-
+  
 // Mobile menu functionality
 const mobileMenuBtn = document.getElementById("mobileMenuBtn");
 const mobileMenu = document.getElementById("mobileMenu");
