@@ -253,7 +253,7 @@ if (!$auth->isLoggedIn()) { // Redirect if NOT logged in
     </main>
 
     <!-- Statistics -->
-    <div class="relative z-0 px-6 py-12 bg-amber-500">
+    <div class="relative z-0 px-6 py-12">
       <div class="max-w-6xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Books Available -->
