@@ -98,38 +98,22 @@ if (isset($_POST['delete_id'])) {
     exit();
 }
 
-// Handle book actions
-if (isset($_POST['addBook'])) {
-    // Add book logic
-} elseif (isset($_POST['updateBook'])) {
-    // Update book logic
-} elseif (isset($_POST['delete_id'])) {
-    // Delete book logic
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        die("Invalid CSRF token");
-    }
-    $database->deleteBook($_POST['delete_id']);
-    $_SESSION['message'] = "Book deleted successfully!";
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
-}
 
-// Pagination
-$limit = 6; // rows per page
+
+
+
+// Paginatio
+$limit = 6;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-if ($page < 1) $page = 1;
-
 $offset = ($page - 1) * $limit;
-
 $totalBooks = $database->getTotalBooks();
 $totalPages = ceil($totalBooks / $limit);
-
-$bookss = $database->tableBooks($limit, $offset);
-
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? 'all';
-
 $books = $database->getFilteredBooks($category, $search);
+
+
+
 
 ?>
 
@@ -157,6 +141,7 @@ $books = $database->getFilteredBooks($category, $search);
         <!-- Sidebar -->
         <?php if (file_exists('Frontend/sidebar.php')) include 'Frontend/sidebar.php'; ?>
         <!-- Sidebar -->
+
         <!-- Main Content -->
         <div class="main-content flex-grow-1">
             <!-- Header -->
@@ -211,8 +196,6 @@ $books = $database->getFilteredBooks($category, $search);
                                 <li><span class="dropdown-item-text text-muted">Admin</span></li>
                             </ul>
                         </div>
-
-                        <!-- Desktop Profile Image -->
                         <img
                             src="../image/willan.jpg"
                             alt="Profile"
@@ -226,9 +209,7 @@ $books = $database->getFilteredBooks($category, $search);
             <!-- Controls -->
             <div class="p-4 w-100">
                 <div class="flex flex-col md:flex-row mb-4">
-
                     <?php if ($message): ?>
-                        <!-- Success Modal -->
                         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -247,10 +228,10 @@ $books = $database->getFilteredBooks($category, $search);
                         </div>
                     <?php endif; ?>
 
-                    <div class="w-full lg:w-[25%] mb-3 md:mb-0 md:px-2">
+                    <div class="w-full lg:w-[20%] mb-3 md:mb-0">
                         <button
                             type="button"
-                            class="bg-blue-500 text-white flex items-center justify-center w-full md:w-auto px-8 py-2 rounded hover:bg-blue-600"
+                            class="bg-blue-500 text-white flex items-center justify-center w-full md:w-auto px-3 lg:px-4 py-2 rounded hover:bg-blue-600"
                             data-bs-toggle="modal"
                             data-bs-target="#addBookModal">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -313,7 +294,6 @@ $books = $database->getFilteredBooks($category, $search);
                                         <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['copies']) ?></td>
                                         <td class="align-middle">
                                             <div class="d-flex gap-1">
-                                                <!-- Edit Button -->
                                                 <button class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg editBtn" title="Edit"
                                                     data-id="<?= $book['id'] ?>"
                                                     data-title="<?= htmlspecialchars($book['title']) ?>"
@@ -326,7 +306,6 @@ $books = $database->getFilteredBooks($category, $search);
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                     </svg>
                                                 </button>
-                                                <!-- Delete Button -->
                                                 <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this book?');">
                                                     <input type="hidden" name="delete_id" value="<?= $book['id'] ?>">
                                                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg" title="Delete">
@@ -352,21 +331,16 @@ $books = $database->getFilteredBooks($category, $search);
                 <div class="d-flex justify-content-center mt-4">
                     <nav aria-label="Book pagination">
                         <ul class="pagination">
-                            <!-- Prev Button -->
                             <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
                                 <a class="page-link" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
                                     &laquo;
                                 </a>
                             </li>
-
-                            <!-- Page Numbers -->
                             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                                 <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
                                     <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                                 </li>
                             <?php endfor; ?>
-
-                            <!-- Next Button -->
                             <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
                                 <a class="page-link" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
                                     &raquo;
@@ -385,35 +359,6 @@ $books = $database->getFilteredBooks($category, $search);
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="../admin//script.js"></script>
             <script src="../admin//active.js"></script>
-
-            <!-- AJAX Script ni  -->
-            <script>
-                $(document).ready(function() {
-                    let searchTimeout;
-                    $('#searchInput').on('input', function() {
-                        clearTimeout(searchTimeout);
-                        const searchQuery = $(this).val();
-                        const category = $('#categoryInput').val();
-
-                        searchTimeout = setTimeout(function() {
-                            $.ajax({
-                                url: 'search_books.php',
-                                type: 'GET',
-                                data: {
-                                    search: searchQuery,
-                                    category: category
-                                },
-                                success: function(response) {
-                                    $('#bookTableBody').html(response);
-                                },
-                                error: function(xhr) {
-                                    $('#bookTableBody').html('<tr><td colspan="9" class="text-center text-danger">Error loading results</td></tr>');
-                                }
-                            });
-                        }, 500); // 500ms delay
-                    });
-                });
-            </script>
 
 </body>
 

@@ -27,11 +27,11 @@
                 Books
               </a>
               <a class="nav-link text-light py-3 px-3" href="../admin/transaction.php" style="font-size: 16px;">
-                <i class="bi bi-book me-2"></i>
+                <i class="bi bi-cash-coin me-2"></i>
                 Transaction
               </a>
               <a class="nav-link text-light py-3 px-3" href="../admin/activity-log.php" style="font-size: 16px;">
-                <i class="bi bi-book me-2"></i>
+                <i class="bi bi-journal-text me-2"></i>
                 Activity Log
               </a>
               <a class="nav-link text-light py-3 px-3" href="../admin/useradmin.php" style="font-size: 16px;">

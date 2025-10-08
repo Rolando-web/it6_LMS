@@ -108,7 +108,7 @@ class Database
     public function getTotalBooks()
     {
         $stmt = $this->pdo->query("SELECT COUNT(*) as total FROM books");
-        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+        return (int) $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
 
     public function getRecentlyAddedBooks($days = 3)
