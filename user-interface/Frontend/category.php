@@ -164,6 +164,61 @@
           </a>
         </div>
       </div>
+
+
+      <!-- Biology -->
+      <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-pink-600 bg-opacity-20 rounded-full flex items-center justify-center">
+              <span class="text-pink-400 font-semibold text-sm">06</span>
+            </div>
+            <div>
+              <h3 class="text-white font-medium text-lg">Biology</h3>
+              <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-pink-400 font-medium">20 books</span>
+          <a href="./user-borrow.php">
+            <button class="text-pink-400 hover:text-pink-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
+        </div>
+      </div>
+
+
+      <!-- Science -->
+      <div class="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors group">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-pink-600 bg-opacity-20 rounded-full flex items-center justify-center">
+              <span class="text-pink-400 font-semibold text-sm">06</span>
+            </div>
+            <div>
+              <h3 class="text-white font-medium text-lg">Science</h3>
+              <p class="text-gray-400 text-sm">Novels, short story, and imagination literature</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-pink-400 font-medium">20 books</span>
+          <a href="./user-borrow.php">
+            <button class="text-pink-400 hover:text-pink-300 transition-colors inline-flex items-center space-x-1 text-sm cursor-pointer">
+              <span>Explore</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </button>
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>

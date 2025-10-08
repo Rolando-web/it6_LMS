@@ -1,7 +1,7 @@
                 <!-- Modal -->
                 <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content" style="background-color: #101828; color:white;">
+                    <div class="modal-content">
 
                       <!-- Modal Header -->
                       <div class="modal-header">

@@ -186,7 +186,7 @@ CREATE TRIGGER `log_return_activity` AFTER UPDATE ON `transactions` FOR EACH ROW
   END IF;
 END
 $$
-DELIMITER ;
+DELIMITER ; 
 
 -- --------------------------------------------------------
 

@@ -20,17 +20,13 @@ if (!$auth->isLoggedIn() || $_SESSION['user_role'] !== 'Admin') {
 }
 
 // Pagination
-$limit = 14;
+$limit = 15;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 
 $offset = ($page - 1) * $limit;
-
-// ✅ Count total transactions
 $totalusers = $library->countTransactions();
 $totalPages = ceil($totalusers / $limit);
-
-// ✅ Fetch only current page transactions
 $users = $library->getTransactions($limit, $offset);
 
 

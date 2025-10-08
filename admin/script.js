@@ -73,8 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
     keyboard: false,
   });
   modal.show();
-
-  // Auto-close after 3 seconds
   setTimeout(() => {
     modal.hide();
   }, 3000);

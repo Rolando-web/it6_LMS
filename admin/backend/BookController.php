@@ -159,4 +159,32 @@ class Database
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function countBooksByCategory($category)
+    {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM books WHERE category = :category";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':category' => $category]);
+            return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+        } catch (PDOException $e) {
+            error_log("Count failed: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function getAllCategoriesWithCount()
+    {
+        try {
+            $sql = "SELECT category, COUNT(*) as total 
+                FROM books 
+                GROUP BY category 
+                ORDER BY category ASC";
+            $stmt = $this->pdo->query($sql);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Count failed: " . $e->getMessage());
+            return [];
+        }
+    }
 }

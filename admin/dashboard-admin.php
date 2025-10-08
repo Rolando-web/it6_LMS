@@ -69,15 +69,12 @@ if (isset($_POST['updateBook'])) {
 
 
 // Pagination
-$limit = 5; // rows per page
+$limit = 5;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
-
 $offset = ($page - 1) * $limit;
-
 $totalBooks = $database->getTotalBooks();
 $targetbooks = 100;
-
 $percentagebooks = ($totalBooks / $targetbooks) * 100;
 $totalPages = ceil($totalBooks / $limit);
 
@@ -85,7 +82,6 @@ $books = $database->tableBooks($limit, $offset);
 
 // Recently added books
 $recentBooks = $database->getRecentlyAddedBooks();
-
 
 ?>
 

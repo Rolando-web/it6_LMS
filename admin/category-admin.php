@@ -25,13 +25,27 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 
 $offset = ($page - 1) * $limit;
-
-// ✅ Count total transactions
 $totalusers = $library->countTransactions();
 $totalPages = ceil($totalusers / $limit);
-
-// ✅ Fetch only current page transactions
 $users = $library->getTransactions($limit, $offset);
+
+// Count books in each category
+$categories = $db->getAllCategoriesWithCount();
+$categoryCounts = [];
+foreach ($categories as $cat) {
+  $categoryCounts[$cat['category']] = $cat['total'];
+}
+
+$categoryImages = [
+  'Fiction' => '../image/category/fiction.jpg',
+  'Philosophy' => '../image/category/philosophy.jpg',
+  'Technology' => '../image/category/technology.jpg',
+  'Arts' => '../image/category/arts.jpg',
+  'History' => '../image/category/history.jpg',
+  'Business' => '../image/category/business.png',
+  'Biology' => '../image/category/biology.jpg',
+  'Science' => '../image/category/science.jpg'
+];
 
 
 
@@ -64,9 +78,7 @@ $users = $library->getTransactions($limit, $offset);
       }
     }
   </script>
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
@@ -102,8 +114,6 @@ $users = $library->getTransactions($limit, $offset);
               </div>
               <small class="text-white opacity-50">Admin</small>
             </div>
-
-            <!-- Mobile Dropdown -->
             <div class="dropdown d-sm-none">
               <a
                 href="#"
@@ -132,8 +142,6 @@ $users = $library->getTransactions($limit, $offset);
                 <li><span class="dropdown-item-text text-muted">Admin</span></li>
               </ul>
             </div>
-
-            <!-- Desktop Profile Image -->
             <img
               src="../image/willan.jpg"
               alt="Profile"
@@ -146,106 +154,23 @@ $users = $library->getTransactions($limit, $offset);
 
       <!-- Category -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 m-8">
-        <!-- Fiction Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/fiction.jpg" alt="Fiction category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+        <?php foreach ($categoryImages as $categoryName => $imagePath): ?>
+          <?php
+          $bookCount = isset($categoryCounts[$categoryName]) ? $categoryCounts[$categoryName] : 0;
+          ?>
+          <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
+            <div class="aspect-[3/4] overflow-hidden">
+              <img src="<?php echo htmlspecialchars($imagePath); ?>"
+                alt="<?php echo htmlspecialchars($categoryName); ?> category"
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+              <h3 class="text-2xl font-bold text-white mb-1"><?php echo htmlspecialchars($categoryName); ?></h3>
+              <p class="text-sm text-gray-300"><?php echo $bookCount; ?> books</p>
+            </div>
           </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">Fiction</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-        <!-- philosophy Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/philosophy.jpg" alt="philosophy category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">Philosophy</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-        <!-- technology Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/technology.jpg" alt="technology category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">Technology</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-        <!-- arts Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/arts.jpg" alt="arts category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">Arts</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-        <!-- history Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/history.jpg" alt="history category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">History</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-        <!-- business Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/business.png" alt="business category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">Business</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-        <!-- biology Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/biology.jpg" alt="biology category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">Biology</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-        <!-- science Card -->
-        <div class="group relative overflow-hidden cursor-pointer rounded-lg border border-border bg-card transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)]">
-          <div class="aspect-[3/4] overflow-hidden">
-            <img src="../image/category/science.jpg" alt="science category" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-            <h3 class="text-2xl font-bold text-white mb-1">Science</h3>
-            <p class="text-sm text-gray-300">1234 books</p>
-          </div>
-        </div>
-
-
+        <?php endforeach; ?>
       </div>
-
-
 
       <!-- Bootstrap JS for mobile sidebar toggle -->
       <!-- Bootstrap JS Bundle -->

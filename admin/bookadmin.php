@@ -98,6 +98,22 @@ if (isset($_POST['delete_id'])) {
     exit();
 }
 
+// Handle book actions
+if (isset($_POST['addBook'])) {
+    // Add book logic
+} elseif (isset($_POST['updateBook'])) {
+    // Update book logic
+} elseif (isset($_POST['delete_id'])) {
+    // Delete book logic
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Invalid CSRF token");
+    }
+    $database->deleteBook($_POST['delete_id']);
+    $_SESSION['message'] = "Book deleted successfully!";
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
+
 // Pagination
 $limit = 6; // rows per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -114,6 +130,7 @@ $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? 'all';
 
 $books = $database->getFilteredBooks($category, $search);
+
 ?>
 
 <!DOCTYPE html>
@@ -129,6 +146,7 @@ $books = $database->getFilteredBooks($category, $search);
     <link rel="icon" href="../image/willan.jpg" type="image/jpeg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <style>
 
@@ -242,7 +260,7 @@ $books = $database->getFilteredBooks($category, $search);
                         </button>
                     </div>
                     <div class="w-full md:w-25 lg:w-20">
-                        <form method="GET" action="<?= $_SERVER['PHP_SELF'] ?>" class="flex">
+                        <form method="GET" action="<?= $_SERVER['PHP_SELF'] ?>" class="flex mb-4">
                             <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
                             <input
                                 type="text"
@@ -275,14 +293,11 @@ $books = $database->getFilteredBooks($category, $search);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($bookss)): ?>
-                                <?php foreach ($bookss as $book): ?>
+                            <?php if (!empty($books)): ?>
+                                <?php foreach ($books as $book): ?>
                                     <tr>
                                         <td>
-                                            <img src="<?= $book['image'] ?: '../image/default.jpg' ?>"
-                                                alt="<?= htmlspecialchars($book['title']) ?>"
-                                                class="rounded"
-                                                width="80" height="80" />
+                                            <img src="<?= $book['image'] ?: '../image/default.jpg' ?>" alt="<?= htmlspecialchars($book['title']) ?>" class="rounded" width="80" height="80" />
                                         </td>
                                         <td class="align-middle"><?= $book['id'] ?></td>
                                         <td class="align-middle">
@@ -298,7 +313,7 @@ $books = $database->getFilteredBooks($category, $search);
                                         <td class="align-middle d-none d-lg-table-cell"><?= htmlspecialchars($book['copies']) ?></td>
                                         <td class="align-middle">
                                             <div class="d-flex gap-1">
-                                                <!-- Edit button -->
+                                                <!-- Edit Button -->
                                                 <button class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg editBtn" title="Edit"
                                                     data-id="<?= $book['id'] ?>"
                                                     data-title="<?= htmlspecialchars($book['title']) ?>"
@@ -311,9 +326,8 @@ $books = $database->getFilteredBooks($category, $search);
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                     </svg>
                                                 </button>
-                                                <!-- Delete -->
-                                                <form method="POST" style="display:inline;"
-                                                    onsubmit="return confirm('Are you sure you want to delete this book?');">
+                                                <!-- Delete Button -->
+                                                <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this book?');">
                                                     <input type="hidden" name="delete_id" value="<?= $book['id'] ?>">
                                                     <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg" title="Delete">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -372,19 +386,34 @@ $books = $database->getFilteredBooks($category, $search);
             <script src="../admin//script.js"></script>
             <script src="../admin//active.js"></script>
 
+            <!-- AJAX Script ni  -->
             <script>
-                // Book added success modal
-                document.addEventListener("DOMContentLoaded", function() {
-                    const modal = new bootstrap.Modal(document.getElementById("successModal"), {
-                        keyboard: false,
+                $(document).ready(function() {
+                    let searchTimeout;
+                    $('#searchInput').on('input', function() {
+                        clearTimeout(searchTimeout);
+                        const searchQuery = $(this).val();
+                        const category = $('#categoryInput').val();
+
+                        searchTimeout = setTimeout(function() {
+                            $.ajax({
+                                url: 'search_books.php',
+                                type: 'GET',
+                                data: {
+                                    search: searchQuery,
+                                    category: category
+                                },
+                                success: function(response) {
+                                    $('#bookTableBody').html(response);
+                                },
+                                error: function(xhr) {
+                                    $('#bookTableBody').html('<tr><td colspan="9" class="text-center text-danger">Error loading results</td></tr>');
+                                }
+                            });
+                        }, 500); // 500ms delay
                     });
-                    modal.show();
-                    setTimeout(() => {
-                        modal.hide();
-                    }, 3000);
                 });
             </script>
-
 
 </body>
 
